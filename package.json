@@ -1,9 +1,6 @@
 {
   "name": "@restaurant-microservices/source",
   "version": "0.0.0",
-  "engines": {
-    "node": ">=20.0.0"
-  },
   "repository": {
     "type": "git",
     "url": "git@github.com:Cihaan/restaurant-microservices.git"

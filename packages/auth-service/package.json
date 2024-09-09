@@ -1,10 +1,6 @@
 {
-  "name": "@restaurant-microservices/source",
+  "name": "@restaurant-microservices/auth-service",
   "version": "0.0.0",
-  "repository": {
-    "type": "git",
-    "url": "git@github.com:Cihaan/restaurant-microservices.git"
-  },
   "scripts": {
     "format": "prettier --write --cache .",
     "lint": "eslint --cache ."
