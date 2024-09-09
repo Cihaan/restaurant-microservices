@@ -5,8 +5,11 @@
     "type": "git",
     "url": "git@github.com:Cihaan/restaurant-microservices.git"
   },
-  "scripts": {},
+  "scripts": {
+    "dev": "npx concurrently \"pnpm --filter auth-service dev\" "
+  },
   "private": true,
-  "dependencies": {},
-  "devDependencies": {}
+  "dependencies": {
+    "concurrently": "^9.0.0"
+  }
 }
