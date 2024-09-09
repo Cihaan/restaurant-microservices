@@ -7,15 +7,13 @@
   },
   "scripts": {
     "format": "prettier --write --cache .",
-    "lint": "eslint --cache .",
-    "dev": "tsx src/main.ts --env-file=.env"
+    "lint": "eslint --cache ."
   },
   "private": true,
   "dependencies": {
     "axios": "1.6.0",
     "connect-redis": "7.1.1",
     "cors": "2.8.5",
-    "dotenv": "^16.4.5",
     "drizzle-orm": "0.32.1",
     "express": "4.18.1",
     "express-session": "1.18.0",
