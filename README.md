@@ -9,6 +9,14 @@ This is a mono-rejson repository for a restaurant microservices project. The pro
 - **restaurant-service**: Handles restaurant creation and management.
 - **user-service**: Handles user creation and management.
 
+## Docker compose
+
+The project uses Docker Compose to run the services. To run the services, run the following command in the root of the project:
+
+```bash
+docker-compose up
+```
+
 ## Installation
 
 To install the project, run the following command in the root of the project:
