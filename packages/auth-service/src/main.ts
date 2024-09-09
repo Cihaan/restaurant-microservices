@@ -17,8 +17,6 @@ import { authGuard } from './middleware/guard';
 import authRoutes, { configurePassport } from './routes/auth';
 import userRoutes from './routes/users';
 
-// console.log(process.env);
-
 const app = express();
 
 // Middleware

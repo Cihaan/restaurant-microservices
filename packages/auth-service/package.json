@@ -4,7 +4,10 @@
   "scripts": {
     "format": "prettier --write --cache .",
     "lint": "eslint --cache .",
-    "dev": "npx tsx --env-file=.env src/main.ts"
+    "dev": "npx tsx --env-file=.env src/main.ts",
+    "drizzle:generate": "drizzle-kit generate",
+    "drizzle:migrate": "npx drizzle-kit migrate",
+    "drizzle:rollback": "npx drizzle-kit rollback"
   },
   "private": true,
   "dependencies": {
