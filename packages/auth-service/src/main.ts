@@ -8,6 +8,7 @@ import express, { Request, Response } from 'express';
 import session from 'express-session';
 import helmet from 'helmet';
 import morgan from 'morgan';
+import { specs, swaggerUi } from 'packages/auth-service/src/docs/swagger';
 import passport from 'passport';
 import path from 'path';
 import { redisStore } from './caching/redis';
@@ -52,6 +53,9 @@ app.use(
 configurePassport(passport);
 app.use(passport.initialize());
 app.use(passport.session());
+
+// Swagger
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
 
 // Error middleware
 app.use(errorHandler);
