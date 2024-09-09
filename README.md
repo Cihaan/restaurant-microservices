@@ -13,14 +13,3 @@ This is a mono-rejson repository for a restaurant microservices project. The pro
 
 To install the project, run the following command:
 
-```bash
-pnpm install
-```
-
-## Running the project
-
-To run the project, run the following command:
-
-```bash
-pnpm start
-```

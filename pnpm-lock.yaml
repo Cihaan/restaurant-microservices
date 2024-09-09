@@ -19,9 +19,6 @@ importers:
       cors:
         specifier: 2.8.5
         version: 2.8.5
-      dotenv:
-        specifier: ^16.4.5
-        version: 16.4.5
       drizzle-orm:
         specifier: 0.32.1
         version: 0.32.1(postgres@3.4.4)(react@18.3.1)
@@ -1391,10 +1388,6 @@ packages:
   doctrine@3.0.0:
     resolution: {integrity: sha512-yS+Q5i3hBf7GBkd4KG8a7eBNNWNGLTaEwwYWUijIYM7zrlYDM0BFXHjjPWlWZ1Rg7UaddZeIDmi9jF3HmqiQ2w==}
     engines: {node: '>=6.0.0'}
-
-  dotenv@16.4.5:
-    resolution: {integrity: sha512-ZmdL2rui+eB2YwhsWzjInR8LldtZHGDoQ1ugH85ppHKwpUHL7j7rN0Ti9NCnGiQbhaZ11FpR+7ao1dNsmduNUg==}
-    engines: {node: '>=12'}
 
   drizzle-kit@0.23.0:
     resolution: {integrity: sha512-w9jE97z193dd4jzAyj4Uv2SOh8Ydue70Ki6W0awy4bGM1aPXan6zD6Yv+nNTA6oGgNTDl2MJFxutjHG4fden5g==}
@@ -3921,8 +3914,6 @@ snapshots:
   doctrine@3.0.0:
     dependencies:
       esutils: 2.0.3
-
-  dotenv@16.4.5: {}
 
   drizzle-kit@0.23.0:
     dependencies:
