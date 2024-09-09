@@ -1,0 +1,20 @@
+{
+  "name": "@restaurant-microservices/source",
+  "version": "0.0.0",
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:Cihaan/restaurant-microservices.git"
+  },
+  "scripts": {
+    "format": "prettier --write --cache .",
+    "lint": "eslint --cache .",
+    "dev": "pnpm -r --parallel --filter='./packages/*' run dev",
+    "release": "tsx scripts/release.ts"
+  },
+  "private": true,
+  "dependencies": {},
+  "devDependencies": {}
+}
