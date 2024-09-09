@@ -6,6 +6,7 @@
     "url": "git@github.com:Cihaan/restaurant-microservices.git"
   },
   "scripts": {
+    "auth:drizzle:migrate": "pnpm --filter auth-service drizzle:generate && pnpm --filter auth-service drizzle:migrate",
     "dev": "npx concurrently \"pnpm --filter auth-service dev\" "
   },
   "private": true,
