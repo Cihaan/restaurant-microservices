@@ -11,5 +11,23 @@ This is a mono-rejson repository for a restaurant microservices project. The pro
 
 ## Installation
 
-To install the project, run the following command:
+To install the project, run the following command in the root of the project:
+
+```bash
+pnpm install
+```
+
+To setup the database, run the following command in the root of the project:
+
+```bash
+pnpm auth:drizzle:migrate
+```
+
+## Running the project
+
+To run the project, run the following command in the root of the project:
+
+```bash
+pnpm dev
+```
 
