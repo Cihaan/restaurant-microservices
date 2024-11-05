@@ -53,7 +53,7 @@ app.get('/healthz', (req: Request, res: Response) => {
   res.send('OK');
 });
 
-const PORT = process.env.PORT || 3333;
+const PORT = process.env.PORT || 3334;
 
 async function startServer() {
   try {

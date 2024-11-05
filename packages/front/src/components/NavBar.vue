@@ -11,6 +11,12 @@
           <router-link to="/" class="hover:underline">Menu</router-link>
         </li>
         <li>
+          <router-link to="/gestion-client" class="hover:underline">Gestion client</router-link>
+        </li>
+        <li>
+          <router-link to="/gestion-commande" class="hover:underline">Gestion commande</router-link>
+        </li>
+        <li>
           <router-link to="/panier" class="hover:underline">Panier</router-link>
         </li>
       </ul>
