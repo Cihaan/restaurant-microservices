@@ -1,0 +1,14 @@
+_format_version: "2.1"
+services:
+  - name: auth-service
+    url: http://auth-service:8000
+    routes:
+      - name: auth-service-route
+        paths:
+          - /auth
+        strip_path: false
+        methods:
+          - GET
+          - POST
+          - PUT
+          - DELETE
