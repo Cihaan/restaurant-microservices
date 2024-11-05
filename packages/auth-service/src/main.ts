@@ -8,11 +8,11 @@ import express, { Request, Response } from 'express';
 import session from 'express-session';
 import helmet from 'helmet';
 import morgan from 'morgan';
-import { specs, swaggerUi } from 'packages/auth-service/src/docs/swagger';
+// import { specs, swaggerUi } from 'packages/auth-service/src/docs/swagger';
 import passport from 'passport';
 import path from 'path';
 import { redisStore } from './caching/redis';
-import { closeConnections } from './database/db';
+import { closeConnections, runMigrations } from './database/db';
 import { errorHandler } from './middleware/error';
 import { authGuard } from './middleware/guard';
 import authRoutes, { configurePassport } from './routes/auth';
@@ -54,8 +54,8 @@ configurePassport(passport);
 app.use(passport.initialize());
 app.use(passport.session());
 
-// Swagger
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
+// // Swagger
+// app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
 
 // Error middleware
 app.use(errorHandler);
@@ -64,16 +64,17 @@ app.use(errorHandler);
 app.use(authRoutes);
 app.use(authGuard, userRoutes);
 
-app.get('/healthz', (req: Request, res: Response) => {
+app.get('/health', (_: Request, res: Response) => {
   res.send('OK');
 });
 
-const PORT = process.env.PORT || 3333;
+const { PORT = 3333 } = process.env;
 
 async function startServer() {
   try {
+    console.log(process.env);
     // if (process.env.NODE_ENV !== 'production') {
-    //   await runMigrations();
+    await runMigrations();
     // }
 
     const server = app.listen(PORT, () => {

@@ -1,0 +1,23 @@
+{
+  "auth_service": {
+    "port": 3333,
+    "node_env": "development",
+    "google_client_id": "",
+    "google_client_secret": "",
+    "session_secret": "",
+    "postgres": {
+      "database": "restaurant",
+      "user": "restaurant",
+      "password": "restaurant",
+      "port": 5432
+    },
+    "redis": {
+      "password": "restaurant",
+      "port": 6379
+    }
+  },
+  "traefik": {
+    "http_port": 80,
+    "dashboard_port": 8080
+  }
+}
