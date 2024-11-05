@@ -77,10 +77,6 @@ services:
       interval: 30s
       timeout: 10s
       retries: 3
-    labels:
-      - 'traefik.enable=true'
-      - 'traefik.http.routers.auth.rule=Host(`auth.localhost`)'
-      - 'traefik.http.services.auth.loadbalancer.server.port=${AUTH_SERVICE_PORT}'
 
   api-gateway:
     image: kong
