@@ -6,11 +6,7 @@ COPY package*.json ./
 
 RUN npm ci
 
-COPY src ./src
-
-COPY tsconfig.json .
-
-COPY drizzle.config.ts ./
+COPY . .
 
 RUN npm run drizzle:generate
 
