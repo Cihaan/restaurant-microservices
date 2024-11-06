@@ -26,3 +26,16 @@ services:
           - PUT
           - DELETE
           - OPTIONS
+  - name: livraison-service
+    url: http://livraison-service:3335
+    routes:
+      - name: livraison-service-route
+        paths:
+          - /livraison
+        strip_path: false
+        methods:
+          - GET
+          - POST
+          - PUT
+          - DELETE
+          - OPTIONS
