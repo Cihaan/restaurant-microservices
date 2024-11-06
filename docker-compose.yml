@@ -23,7 +23,7 @@ services:
       - plats-service
 
   # auth-postgres:
-  #   image: postgres
+  #   image: postgres:16
   #   container_name: restaurant-auth-db
   #   env_file: .env
   #   environment:
@@ -102,7 +102,7 @@ services:
   #     retries: 3
 
   plats-postgres:
-    image: postgres
+    image: postgres:16
     container_name: restaurant-plats-db
     env_file: .env
     environment:
@@ -110,8 +110,7 @@ services:
       - POSTGRES_USER=${PLATS_SERVICE_POSTGRES_USER}
       - POSTGRES_PASSWORD=${PLATS_SERVICE_POSTGRES_PASSWORD}
     ports:
-      - '5432:5432'
-      # - '${PLATS_SERVICE_POSTGRES_PORT}:5432'
+      - '${PLATS_SERVICE_POSTGRES_PORT}:5432'
     volumes:
       - plats_postgres_data:/var/lib/postgresql/data
     restart: unless-stopped

@@ -14,12 +14,12 @@ services:
           - DELETE
           - OPTIONS
   - name: plats-service
-    url: http://plats-service:3334
+    url: http://plats-service:3333
     routes:
       - name: plats-service-route
         paths:
           - /plats
-        strip_path: true
+        strip_path: false
         methods:
           - GET
           - POST

@@ -33,7 +33,7 @@ app.get('/health', (req: Request, res: Response) => {
   res.send('OK');
 });
 
-const PORT = process.env.PLATS_SERVICE_PORT;
+const PORT = process.env.PORT;
 
 async function startServer() {
   try {
