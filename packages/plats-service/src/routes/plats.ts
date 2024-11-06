@@ -6,10 +6,11 @@ const router = express.Router();
 // Create a new palt
 router.post('/plats', async (req: Request, res: Response) => {
   try {
+    console.log('req.body', req.body);
     const newPlat = await createPlat(req.body);
     res.status(201).json(newPlat);
   } catch (error) {
-    res.status(500).json({ message: 'Error creating user', error });
+    res.status(500).json({ message: 'Error creating plat', error });
   }
 });
 
@@ -29,19 +30,22 @@ router.get('/plats/:id', async (req: Request, res: Response) => {
 // Update a plat
 router.put('/plats/:id', async (req: Request, res: Response) => {
   try {
+    console.log('update plat.id', req.params.id);
+    console.log('update plat', req.body);
     const updatedPlat = await updatePlat(Number(req.params.id), req.body);
     if (!updatedPlat) {
       return res.status(404).json({ message: 'Plat not found' });
     }
     res.json(updatedPlat);
   } catch (error) {
-    res.status(500).json({ message: 'Error updating Plat', error });
+    res.status(500).json({ message: 'Error updating plat', error });
   }
 });
 
 // Delete a palt
 router.delete('/plats/:id', async (req: Request, res: Response) => {
   try {
+    console.log('req.params.id', req.params.id);
     const success = await deletePlat(Number(req.params.id));
     if (!success) {
       return res.status(404).json({ message: 'Plat not found' });
