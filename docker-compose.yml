@@ -110,7 +110,8 @@ services:
       - POSTGRES_USER=${PLATS_SERVICE_POSTGRES_USER}
       - POSTGRES_PASSWORD=${PLATS_SERVICE_POSTGRES_PASSWORD}
     ports:
-      - '${PLATS_SERVICE_POSTGRES_PORT}:5433'
+      - '5432:5432'
+      # - '${PLATS_SERVICE_POSTGRES_PORT}:5432'
     volumes:
       - plats_postgres_data:/var/lib/postgresql/data
     restart: unless-stopped
@@ -143,7 +144,7 @@ services:
       - /app/node_modules
     restart: unless-stopped
     ports:
-      - '${PLATS_SERVICE_PORT}:3334'
+      - '${PLATS_SERVICE_PORT}:3333'
     networks:
       - restaurant-network
     healthcheck:
