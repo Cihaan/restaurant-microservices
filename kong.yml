@@ -1,0 +1,28 @@
+_format_version: "2.1"
+services:
+  - name: auth-service
+    url: http://auth-service:3333
+    routes:
+      - name: auth-service-route
+        paths:
+          - /auth
+        strip_path: true
+        methods:
+          - GET
+          - POST
+          - PUT
+          - DELETE
+          - OPTIONS
+  - name: plats-service
+    url: http://plats-service:3334
+    routes:
+      - name: plats-service-route
+        paths:
+          - /plats
+        strip_path: true
+        methods:
+          - GET
+          - POST
+          - PUT
+          - DELETE
+          - OPTIONS

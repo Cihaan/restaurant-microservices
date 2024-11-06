@@ -75,8 +75,8 @@ router.get(
 router.get(
   '/oauth2/redirect/google',
   passport.authenticate('google', {
-    successRedirect: 'http://localhost:3000/board',
-    failureRedirect: 'http://localhost:3000/',
+    successRedirect: 'http://localhost:5173/panier',
+    failureRedirect: 'http://localhost:5173/',
   })
 );
 
@@ -85,7 +85,7 @@ router.post('/logout', function (req, res, next) {
     if (err) {
       return next(err);
     }
-    res.redirect('http://localhost:3000/');
+    res.redirect('http://localhost:5173/');
   });
 });
 

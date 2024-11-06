@@ -5,13 +5,10 @@
 
 import cors from 'cors';
 import express, { Request, Response } from 'express';
-import session from 'express-session';
 import helmet from 'helmet';
 import morgan from 'morgan';
-import passport from 'passport';
 import path from 'path';
-import { redisStore } from './caching/redis';
-import { closeConnections } from './database/db';
+import { closeConnections, runMigrations } from './database/db';
 import platsRoutes from './routes/plats';
 
 const app = express();
@@ -29,36 +26,19 @@ if (process.env.NODE_ENV === 'production') {
 // Static files
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Session configuration
-app.use(
-  session({
-    store: redisStore,
-    secret: process.env.SESSION_SECRET,
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-      secure: process.env.NODE_ENV === 'production',
-      maxAge: 1000 * 60 * 60 * 24 * 7, // 1 week
-      httpOnly: true,
-      sameSite: 'strict',
-    },
-  })
-);
-
-
 // Routes
 app.use(platsRoutes);
 
-app.get('/healthz', (req: Request, res: Response) => {
+app.get('/health', (req: Request, res: Response) => {
   res.send('OK');
 });
 
-const PORT = process.env.PORT || 3333;
+const PORT = process.env.PORT || 3334;
 
 async function startServer() {
   try {
     // if (process.env.NODE_ENV !== 'production') {
-    //   await runMigrations();
+    await runMigrations();
     // }
 
     const server = app.listen(PORT, () => {

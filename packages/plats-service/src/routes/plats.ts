@@ -3,7 +3,7 @@ import { createPlat, deletePlat, getPlatById, listPlats, updatePlat } from '../s
 
 const router = express.Router();
 
-// Create a new user
+// Create a new palt
 router.post('/plats', async (req: Request, res: Response) => {
   try {
     const newPlat = await createPlat(req.body);
@@ -13,7 +13,7 @@ router.post('/plats', async (req: Request, res: Response) => {
   }
 });
 
-// Get a user by ID
+// Get a palt by ID
 router.get('/plats/:id', async (req: Request, res: Response) => {
   try {
     const plat = await getPlatById(Number(req.params.id));
@@ -52,7 +52,7 @@ router.delete('/plats/:id', async (req: Request, res: Response) => {
   }
 });
 
-// List users with pagination
+// List palt with pagination
 router.get('/plats', async (req: Request, res: Response) => {
   const page = Number(req.query.page) || 1;
   const pageSize = Number(req.query.pageSize) || 10;
