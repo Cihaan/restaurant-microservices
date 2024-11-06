@@ -6,18 +6,27 @@
     "google_client_secret": "",
     "session_secret": "",
     "postgres": {
-      "database": "restaurant",
-      "user": "restaurant",
-      "password": "restaurant",
+      "database": "restaurant-auth",
+      "user": "restaurant-auth",
+      "password": "restaurant-auth",
       "port": 5432
     },
     "redis": {
-      "password": "restaurant",
+      "password": "restaurant-auth",
       "port": 6379
     }
   },
-  "traefik": {
-    "http_port": 80,
-    "dashboard_port": 8080
+  "plats_service": {
+    "port": 3334,
+    "node_env": "development",
+    "postgres": {
+      "database": "restaurant-plats",
+      "user": "restaurant-plats",
+      "password": "restaurant-plats",
+      "port": 5432
+    }
+  },
+  "kong": {
+    "port": 8000
   }
 }

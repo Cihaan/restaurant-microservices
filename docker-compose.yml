@@ -18,12 +18,13 @@ services:
       - ./kong.yml:/kong.yml
     networks:
       - restaurant-network
-    depends_on:
+    # depends_on:
       # - auth-service
-      - plats-service
+      # - plats-service
+      # - livraison-service
 
   # auth-postgres:
-  #   image: postgres
+  #   image: postgres:16
   #   container_name: restaurant-auth-db
   #   env_file: .env
   #   environment:
@@ -101,63 +102,117 @@ services:
   #     timeout: 10s
   #     retries: 3
 
-  plats-postgres:
-    image: postgres
-    container_name: restaurant-plats-db
+  # plats-postgres:
+  #   image: postgres:16
+  #   container_name: restaurant-plats-db
+  #   env_file: .env
+  #   environment:
+  #     - POSTGRES_DB=${PLATS_SERVICE_POSTGRES_DATABASE}
+  #     - POSTGRES_USER=${PLATS_SERVICE_POSTGRES_USER}
+  #     - POSTGRES_PASSWORD=${PLATS_SERVICE_POSTGRES_PASSWORD}
+  #   command: -p 5433
+  #   ports:
+  #     - '${PLATS_SERVICE_POSTGRES_PORT}:5433'
+  #   volumes:
+  #     - plats_postgres_data:/var/lib/postgresql/data
+  #   restart: unless-stopped
+  #   networks:
+  #     - restaurant-network
+  #   healthcheck:
+  #     test: ['CMD-SHELL', 'pg_isready -U ${PLATS_SERVICE_POSTGRES_PASSWORD} -p 5433']
+  #     interval: 10s
+  #     timeout: 5s
+  #     retries: 5
+
+  # plats-service:
+  #   build:
+  #     context: ./packages/plats-service
+  #     dockerfile: Dockerfile
+  #   container_name: restaurant-plats-api
+  #   environment:
+  #     PORT: ${PLATS_SERVICE_PORT}
+  #     NODE_ENV: ${PLATS_SERVICE_NODE_ENV}
+  #     DB_HOST: plats-postgres
+  #     DB_DATABASE: ${PLATS_SERVICE_POSTGRES_DATABASE}
+  #     DB_PORT: ${PLATS_SERVICE_POSTGRES_PORT}
+  #     DB_USER: ${PLATS_SERVICE_POSTGRES_USER}
+  #     DB_PASSWORD: ${PLATS_SERVICE_POSTGRES_PASSWORD}
+  #   depends_on:
+  #     plats-postgres:
+  #       condition: service_healthy
+  #   volumes:
+  #     - ./packages/plats-service:/app
+  #     - /app/node_modules
+  #   restart: unless-stopped
+  #   ports:
+  #     - '${PLATS_SERVICE_PORT}:${PLATS_SERVICE_PORT}'
+  #   networks:
+  #     - restaurant-network
+  #   healthcheck:
+  #     test:
+  #       ['CMD', 'curl', '-f', 'http://127.0.0.1:${PLATS_SERVICE_PORT}/health']
+  #     interval: 30s
+  #     timeout: 10s
+  #     retries: 3
+
+  livraison-postgres:
+    image: postgres:16
+    container_name: restaurant-livraison-db
     env_file: .env
     environment:
       - POSTGRES_DB=${PLATS_SERVICE_POSTGRES_DATABASE}
       - POSTGRES_USER=${PLATS_SERVICE_POSTGRES_USER}
       - POSTGRES_PASSWORD=${PLATS_SERVICE_POSTGRES_PASSWORD}
+    command: -p 5434
     ports:
-      - '${PLATS_SERVICE_POSTGRES_PORT}:5433'
+      - '${PLATS_SERVICE_POSTGRES_PORT}:5434'
     volumes:
-      - plats_postgres_data:/var/lib/postgresql/data
+      - livraison_postgres_data:/var/lib/postgresql/data
     restart: unless-stopped
     networks:
       - restaurant-network
     healthcheck:
-      test: ['CMD-SHELL', 'pg_isready -U ${PLATS_SERVICE_POSTGRES_PASSWORD}']
+      test: ['CMD-SHELL', 'pg_isready -U ${PLATS_SERVICE_POSTGRES_PASSWORD} -p 5434']
       interval: 10s
       timeout: 5s
       retries: 5
 
-  plats-service:
-    build:
-      context: ./packages/plats-service
-      dockerfile: Dockerfile
-    container_name: restaurant-plats-api
-    environment:
-      PORT: 3333
-      NODE_ENV: ${PLATS_SERVICE_NODE_ENV}
-      DB_HOST: plats-postgres
-      DB_DATABASE: ${PLATS_SERVICE_POSTGRES_DATABASE}
-      DB_PORT: ${PLATS_SERVICE_POSTGRES_PORT}
-      DB_USER: ${PLATS_SERVICE_POSTGRES_USER}
-      DB_PASSWORD: ${PLATS_SERVICE_POSTGRES_PASSWORD}
-    depends_on:
-      plats-postgres:
-        condition: service_healthy
-    volumes:
-      - ./packages/plats-service:/app
-      - /app/node_modules
-    restart: unless-stopped
-    ports:
-      - '${PLATS_SERVICE_PORT}:3334'
-    networks:
-      - restaurant-network
-    healthcheck:
-      test:
-        ['CMD', 'curl', '-f', 'http://127.0.0.1:${PLATS_SERVICE_PORT}/health']
-      interval: 30s
-      timeout: 10s
-      retries: 3
+  # livraison-service:
+  #   build:
+  #     context: ./packages/livraison-service
+  #     dockerfile: Dockerfile
+  #   container_name: restaurant-livraison-api
+  #   environment:
+  #     PORT: ${PLATS_SERVICE_PORT}
+  #     NODE_ENV: ${PLATS_SERVICE_NODE_ENV}
+  #     DB_HOST: livraison-postgres
+  #     DB_DATABASE: ${PLATS_SERVICE_POSTGRES_DATABASE}
+  #     DB_PORT: ${PLATS_SERVICE_POSTGRES_PORT}
+  #     DB_USER: ${PLATS_SERVICE_POSTGRES_USER}
+  #     DB_PASSWORD: ${PLATS_SERVICE_POSTGRES_PASSWORD}
+  #   depends_on:
+  #     livraison-postgres:
+  #       condition: service_healthy
+  #   volumes:
+  #     - ./packages/livraison-service:/app
+  #     - /app/node_modules
+  #   restart: unless-stopped
+  #   ports:
+  #     - '${PLATS_SERVICE_PORT}:${PLATS_SERVICE_PORT}'
+  #   networks:
+  #     - restaurant-network
+  #   healthcheck:
+  #     test:
+  #       ['CMD', 'curl', '-f', 'http://127.0.0.1:${PLATS_SERVICE_PORT}/health']
+  #     interval: 30s
+  #     timeout: 10s
+  #     retries: 3
 
 volumes:
   auth_postgres_data:
   auth_redis_data:
   plats_postgres_data:
-  plats_redis_data:
+  livraison_postgres_data:
 
 networks:
   restaurant-network:

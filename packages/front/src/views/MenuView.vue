@@ -8,16 +8,25 @@
       <h2 class="text-3xl font-semibold text-gray-700 mb-6 border-b-2 border-gray-300 pb-2">Menu</h2>
       <ul class="space-y-6">
         <li v-for="plat in plats" :key="plat.id"
-            class="menu-item bg-white shadow-lg rounded-lg p-8 border border-gray-100 hover:border-gray-300 transition duration-300 ease-in-out">
-          <h3 class="text-2xl font-bold text-gray-800 mb-2">{{ plat.name }}</h3>
-          <img :src="plat.image" :alt="plat.name" class="w-full h-48 object-cover mb-4 rounded-lg">
-          <p class="text-gray-600 mb-4 italic">{{ plat.description }}</p>
-          <p class="text-lg font-bold text-gray-900">{{ plat.price }} €</p>
-          <button @click="ajouterAuPanier(plat)"
-                  class="mt-4 px-5 py-2 bg-emerald-500 text-white rounded-full hover:bg-emerald-600 focus:outline-none focus:ring-2 focus:ring-emerald-300">
-            Ajouter au panier
-          </button>
+            class="menu-item bg-white shadow-lg rounded-xl p-6 border border-gray-200 hover:shadow-xl hover:border-gray-300 transition duration-300 ease-in-out transform hover:-translate-y-1">
+
+          <div class="flex flex-col items-center text-center">
+            <h3 class="text-2xl font-semibold text-gray-900 mb-2">{{ plat.name }}</h3>
+
+            <img v-if="plat.image" :src="plat.image" :alt="plat.name"
+                 class="h-32 w-32 object-cover mb-4 rounded-xl shadow-md">
+
+            <p class="text-gray-500 mb-4 italic max-w-xs">{{ plat.description }}</p>
+
+            <p class="text-xl font-semibold text-emerald-600 mb-4">{{ plat.price }} €</p>
+
+            <button @click="ajouterAuPanier(plat)"
+                    class="mt-4 w-full px-4 py-2 bg-emerald-500 text-white text-lg font-semibold rounded-lg hover:bg-emerald-600 transition duration-200 focus:outline-none focus:ring-4 focus:ring-emerald-300">
+              Ajouter au panier
+            </button>
+          </div>
         </li>
+
       </ul>
     </section>
   </div>
@@ -29,10 +38,11 @@ import type { Plat } from '@/type/Plat';
 
 
 const plats = ref<Plat[]>([]);
+
 // Méthode pour récupérer les données depuis la gateway
 async function fetchPlats() {
   try {
-    const response = await fetch('https://localhost:8080/api/plats', {
+    const response = await fetch('http://localhost:8000/plats', {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json'

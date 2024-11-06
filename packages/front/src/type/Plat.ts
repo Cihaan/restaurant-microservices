@@ -1,9 +1,9 @@
 export interface Plat {
-  id: number;
+  id?: number;
   name: string;
   description: string;
   price: number;
-  image: string;
-  createdAt: Date;
-  updatedAt: Date;
+  image?: string;
+  createdAt?: Date;
+  updatedAt?: Date;
 }

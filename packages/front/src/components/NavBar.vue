@@ -15,6 +15,8 @@
         </li>
         <li>
           <router-link to="/gestion-commande" class="hover:underline">Gestion commande</router-link>
+        </li><li>
+          <router-link to="/gestion-plats" class="hover:underline">Gestion plats</router-link>
         </li>
         <li>
           <router-link to="/panier" class="hover:underline">Panier</router-link>
