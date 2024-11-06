@@ -109,15 +109,16 @@ services:
       - POSTGRES_DB=${PLATS_SERVICE_POSTGRES_DATABASE}
       - POSTGRES_USER=${PLATS_SERVICE_POSTGRES_USER}
       - POSTGRES_PASSWORD=${PLATS_SERVICE_POSTGRES_PASSWORD}
+    command: -p 5433
     ports:
-      - '${PLATS_SERVICE_POSTGRES_PORT}:5432'
+      - '${PLATS_SERVICE_POSTGRES_PORT}:5433'
     volumes:
       - plats_postgres_data:/var/lib/postgresql/data
     restart: unless-stopped
     networks:
       - restaurant-network
     healthcheck:
-      test: ['CMD-SHELL', 'pg_isready -U ${PLATS_SERVICE_POSTGRES_PASSWORD}']
+      test: ['CMD-SHELL', 'pg_isready -U ${PLATS_SERVICE_POSTGRES_PASSWORD} -p 5433']
       interval: 10s
       timeout: 5s
       retries: 5
@@ -128,7 +129,7 @@ services:
       dockerfile: Dockerfile
     container_name: restaurant-plats-api
     environment:
-      PORT: 3333
+      PORT: ${PLATS_SERVICE_PORT}
       NODE_ENV: ${PLATS_SERVICE_NODE_ENV}
       DB_HOST: plats-postgres
       DB_DATABASE: ${PLATS_SERVICE_POSTGRES_DATABASE}
@@ -143,7 +144,7 @@ services:
       - /app/node_modules
     restart: unless-stopped
     ports:
-      - '${PLATS_SERVICE_PORT}:3333'
+      - '${PLATS_SERVICE_PORT}:${PLATS_SERVICE_PORT}'
     networks:
       - restaurant-network
     healthcheck:
@@ -157,7 +158,6 @@ volumes:
   auth_postgres_data:
   auth_redis_data:
   plats_postgres_data:
-  plats_redis_data:
 
 networks:
   restaurant-network:

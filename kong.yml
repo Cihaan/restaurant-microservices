@@ -14,7 +14,7 @@ services:
           - DELETE
           - OPTIONS
   - name: plats-service
-    url: http://plats-service:3333
+    url: http://plats-service:3334
     routes:
       - name: plats-service-route
         paths:
