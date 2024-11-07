@@ -1,5 +1,5 @@
 {
-  "id": "4c8ec103-e4df-4449-b103-1727aa75c85d",
+  "id": "9917ab1a-0c4c-4c1e-be7e-d57dd69d5269",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -43,6 +43,14 @@
           "type": "varchar(50)",
           "primaryKey": false,
           "notNull": true
+        },
+        "role": {
+          "name": "role",
+          "type": "user_role",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'client'"
         },
         "provider_id": {
           "name": "provider_id",
