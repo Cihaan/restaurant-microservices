@@ -5,18 +5,12 @@
 
 import cors from 'cors';
 import express, { Request, Response } from 'express';
-import session from 'express-session';
 import helmet from 'helmet';
 import morgan from 'morgan';
-import passport from 'passport';
 import path from 'path';
-import { redisStore } from './caching/redis';
 import { closeConnections } from './database/db';
 import { errorHandler } from './middleware/error';
-import { authGuard } from './middleware/guard';
-import authRoutes, { configurePassport } from './routes/auth';
-import userRoutes from './routes/commandes';
-
+import commandesRoutes from './routes/commandes'
 const app = express();
 
 // Middleware
@@ -32,36 +26,16 @@ if (process.env.NODE_ENV === 'production') {
 // Static files
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Session configuration
-app.use(
-  session({
-    store: redisStore,
-    secret: process.env.SESSION_SECRET,
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-      secure: process.env.NODE_ENV === 'production',
-      maxAge: 1000 * 60 * 60 * 24 * 7, // 1 week
-      httpOnly: true,
-      sameSite: 'strict',
-    },
-  })
-);
-
-// Passport configuration
-configurePassport(passport);
-app.use(passport.initialize());
-app.use(passport.session());
+// Routes
+app.use(commandesRoutes);
 
 // Error middleware
 app.use(errorHandler);
 
-// Routes
-app.use(authRoutes);
-app.use(authGuard, userRoutes);
-
 app.get('/healthz', (req: Request, res: Response) => {
-  res.send('OK');
+  res.status(200)
+  res.json("OK")
+  return res
 });
 
 const PORT = process.env.PORT || 3333;
@@ -69,7 +43,7 @@ const PORT = process.env.PORT || 3333;
 async function startServer() {
   try {
     // if (process.env.NODE_ENV !== 'production') {
-    //   await runMigrations();
+      // await runMigrations();
     // }
 
     const server = app.listen(PORT, () => {

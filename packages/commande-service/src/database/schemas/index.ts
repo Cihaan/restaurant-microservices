@@ -1,5 +1,5 @@
-import { InsertCommande, SelectCommande, commandes } from './commandes';
+import { InsertCommande, SelectCommande, commandes, SelectCommandePlat, InsertCommandePlat, commandePlats } from './commandes';
 
-export { InsertCommande, SelectCommande };
+export { InsertCommande, SelectCommande, SelectCommandePlat, InsertCommandePlat };
 
-export { commandes };
+export { commandes, commandePlats };

@@ -5,6 +5,9 @@ import {
   getCommandeById,
   listCommandes,
   updateCommande,
+  removePlatFromCommande,
+  addPlatsToCommande,
+
 } from 'packages/commande-service/src/services/commandes-service';
 
 const router = express.Router();
@@ -24,7 +27,7 @@ router.get('/commandes/:id', async (req: Request, res: Response) => {
   try {
     const commande = await getCommandeById(Number(req.params.id));
     if (!commande) {
-      return res.status(404).json({ message: 'Commande not found' });
+      return res.status(200).json({ message: 'Commande not found' });
     }
     res.json(commande);
   } catch (error) {
@@ -74,13 +77,13 @@ router.get('/commandes', async (req: Request, res: Response) => {
 // Add a plat to a commande
 router.post('/commandes/:id/plats', async (req: Request, res: Response) => {
   const commandeId = Number(req.params.id);
-  const { platId, quantite } = req.body;
+  const platsData = req.body as { platId: number; quantite: number }[];
 
   try {
-    const result = await addPlatToCommande(commandeId, platId, quantite);
-    res.status(201).json(result);
+    const newCommandePlats = await addPlatsToCommande(commandeId, platsData);
+    res.status(201).json(newCommandePlats);
   } catch (error) {
-    res.status(500).json({ message: 'Error adding plat to commande', error });
+    res.status(500).json({ message: 'Error adding plats to commande', error });
   }
 });
 

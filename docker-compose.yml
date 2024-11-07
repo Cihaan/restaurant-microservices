@@ -18,164 +18,219 @@ services:
       - ./kong.yml:/kong.yml
     networks:
       - restaurant-network
-    # depends_on:
-      # - auth-service
-      # - plats-service
+    depends_on:
+      - auth-service
+      - plats-service
+      # - commande-service
       # - livraison-service
 
-  # auth-postgres:
-  #   image: postgres:16
-  #   container_name: restaurant-auth-db
-  #   env_file: .env
-  #   environment:
-  #     - POSTGRES_DB=${AUTH_SERVICE_POSTGRES_DATABASE}
-  #     - POSTGRES_USER=${AUTH_SERVICE_POSTGRES_USER}
-  #     - POSTGRES_PASSWORD=${AUTH_SERVICE_POSTGRES_PASSWORD}
-  #   ports:
-  #     - '${AUTH_SERVICE_POSTGRES_PORT}:5432'
-  #   volumes:
-  #     - auth_postgres_data:/var/lib/postgresql/data
-  #   restart: unless-stopped
-  #   networks:
-  #     - restaurant-network
-  #   healthcheck:
-  #     test: ['CMD-SHELL', 'pg_isready -U ${AUTH_SERVICE_POSTGRES_PASSWORD}']
-  #     interval: 10s
-  #     timeout: 5s
-  #     retries: 5
-
-  # auth-redis:
-  #   image: redis
-  #   container_name: restaurant-auth-cache
-  #   command: redis-server --requirepass ${AUTH_SERVICE_REDIS_PASSWORD} --appendonly yes
-  #   environment:
-  #     REDIS_PASSWORD: ${AUTH_SERVICE_REDIS_PASSWORD}
-  #   ports:
-  #     - ${AUTH_SERVICE_REDIS_PORT}
-  #   volumes:
-  #     - auth_redis_data:/data
-  #   restart: unless-stopped
-  #   networks:
-  #     - restaurant-network
-  #   healthcheck:
-  #     test: ['CMD', 'redis-cli', '-a', '${AUTH_SERVICE_REDIS_PASSWORD}', 'ping']
-  #     interval: 10s
-  #     timeout: 5s
-  #     retries: 5
-
-  # auth-service:
-  #   build:
-  #     context: ./packages/auth-service
-  #     dockerfile: Dockerfile
-  #   container_name: restaurant-auth-api
-  #   environment:
-  #     PORT: 3333
-  #     NODE_ENV: ${AUTH_SERVICE_NODE_ENV}
-  #     GOOGLE_CLIENT_ID: ${AUTH_SERVICE_GOOGLE_CLIENT_ID}
-  #     GOOGLE_CLIENT_SECRET: ${AUTH_SERVICE_GOOGLE_CLIENT_SECRET}
-  #     SESSION_SECRET: ${AUTH_SERVICE_SESSION_SECRET}
-  #     REDIS_HOST: auth-redis
-  #     REDIS_PORT: ${AUTH_SERVICE_REDIS_PORT}
-  #     REDIS_PASSWORD: ${AUTH_SERVICE_REDIS_PASSWORD}
-  #     DB_HOST: auth-postgres
-  #     DB_DATABASE: ${AUTH_SERVICE_POSTGRES_DATABASE}
-  #     DB_PORT: ${AUTH_SERVICE_POSTGRES_PORT}
-  #     DB_USER: ${AUTH_SERVICE_POSTGRES_USER}
-  #     DB_PASSWORD: ${AUTH_SERVICE_POSTGRES_PASSWORD}
-  #   depends_on:
-  #     auth-postgres:
-  #       condition: service_healthy
-  #     auth-redis:
-  #       condition: service_healthy
-  #   volumes:
-  #     - ./packages/auth-service:/app
-  #     - /app/node_modules
-  #   restart: unless-stopped
-  #   ports:
-  #     - '${AUTH_SERVICE_PORT}:3333'
-  #   networks:
-  #     - restaurant-network
-  #   healthcheck:
-  #     test:
-  #       ['CMD', 'curl', '-f', 'http://127.0.0.1:${AUTH_SERVICE_PORT}/health']
-  #     interval: 30s
-  #     timeout: 10s
-  #     retries: 3
-
-  # plats-postgres:
-  #   image: postgres:16
-  #   container_name: restaurant-plats-db
-  #   env_file: .env
-  #   environment:
-  #     - POSTGRES_DB=${PLATS_SERVICE_POSTGRES_DATABASE}
-  #     - POSTGRES_USER=${PLATS_SERVICE_POSTGRES_USER}
-  #     - POSTGRES_PASSWORD=${PLATS_SERVICE_POSTGRES_PASSWORD}
-  #   command: -p 5433
-  #   ports:
-  #     - '${PLATS_SERVICE_POSTGRES_PORT}:5433'
-  #   volumes:
-  #     - plats_postgres_data:/var/lib/postgresql/data
-  #   restart: unless-stopped
-  #   networks:
-  #     - restaurant-network
-  #   healthcheck:
-  #     test: ['CMD-SHELL', 'pg_isready -U ${PLATS_SERVICE_POSTGRES_PASSWORD} -p 5433']
-  #     interval: 10s
-  #     timeout: 5s
-  #     retries: 5
-
-  # plats-service:
-  #   build:
-  #     context: ./packages/plats-service
-  #     dockerfile: Dockerfile
-  #   container_name: restaurant-plats-api
-  #   environment:
-  #     PORT: ${PLATS_SERVICE_PORT}
-  #     NODE_ENV: ${PLATS_SERVICE_NODE_ENV}
-  #     DB_HOST: plats-postgres
-  #     DB_DATABASE: ${PLATS_SERVICE_POSTGRES_DATABASE}
-  #     DB_PORT: ${PLATS_SERVICE_POSTGRES_PORT}
-  #     DB_USER: ${PLATS_SERVICE_POSTGRES_USER}
-  #     DB_PASSWORD: ${PLATS_SERVICE_POSTGRES_PASSWORD}
-  #   depends_on:
-  #     plats-postgres:
-  #       condition: service_healthy
-  #   volumes:
-  #     - ./packages/plats-service:/app
-  #     - /app/node_modules
-  #   restart: unless-stopped
-  #   ports:
-  #     - '${PLATS_SERVICE_PORT}:${PLATS_SERVICE_PORT}'
-  #   networks:
-  #     - restaurant-network
-  #   healthcheck:
-  #     test:
-  #       ['CMD', 'curl', '-f', 'http://127.0.0.1:${PLATS_SERVICE_PORT}/health']
-  #     interval: 30s
-  #     timeout: 10s
-  #     retries: 3
-
-  livraison-postgres:
+  auth-postgres:
     image: postgres:16
-    container_name: restaurant-livraison-db
+    container_name: restaurant-auth-db
+    env_file: .env
+    environment:
+      - POSTGRES_DB=${AUTH_SERVICE_POSTGRES_DATABASE}
+      - POSTGRES_USER=${AUTH_SERVICE_POSTGRES_USER}
+      - POSTGRES_PASSWORD=${AUTH_SERVICE_POSTGRES_PASSWORD}
+    ports:
+      - '${AUTH_SERVICE_POSTGRES_PORT}:5432'
+    volumes:
+      - auth_postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+    networks:
+      - restaurant-network
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U ${AUTH_SERVICE_POSTGRES_PASSWORD}']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  auth-redis:
+    image: redis
+    container_name: restaurant-auth-cache
+    command: redis-server --requirepass ${AUTH_SERVICE_REDIS_PASSWORD} --appendonly yes
+    environment:
+      REDIS_PASSWORD: ${AUTH_SERVICE_REDIS_PASSWORD}
+    ports:
+      - ${AUTH_SERVICE_REDIS_PORT}
+    volumes:
+      - auth_redis_data:/data
+    restart: unless-stopped
+    networks:
+      - restaurant-network
+    healthcheck:
+      test: ['CMD', 'redis-cli', '-a', '${AUTH_SERVICE_REDIS_PASSWORD}', 'ping']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  auth-service:
+    build:
+      context: ./packages/auth-service
+      dockerfile: Dockerfile
+    container_name: restaurant-auth-api
+    environment:
+      PORT: 3333
+      NODE_ENV: ${AUTH_SERVICE_NODE_ENV}
+      GOOGLE_CLIENT_ID: ${AUTH_SERVICE_GOOGLE_CLIENT_ID}
+      GOOGLE_CLIENT_SECRET: ${AUTH_SERVICE_GOOGLE_CLIENT_SECRET}
+      SESSION_SECRET: ${AUTH_SERVICE_SESSION_SECRET}
+      REDIS_HOST: auth-redis
+      REDIS_PORT: ${AUTH_SERVICE_REDIS_PORT}
+      REDIS_PASSWORD: ${AUTH_SERVICE_REDIS_PASSWORD}
+      DB_HOST: auth-postgres
+      DB_DATABASE: ${AUTH_SERVICE_POSTGRES_DATABASE}
+      DB_PORT: ${AUTH_SERVICE_POSTGRES_PORT}
+      DB_USER: ${AUTH_SERVICE_POSTGRES_USER}
+      DB_PASSWORD: ${AUTH_SERVICE_POSTGRES_PASSWORD}
+    depends_on:
+      auth-postgres:
+        condition: service_healthy
+      auth-redis:
+        condition: service_healthy
+    volumes:
+      - ./packages/auth-service:/app
+      - /app/node_modules
+    restart: unless-stopped
+    ports:
+      - '${AUTH_SERVICE_PORT}:3333'
+    networks:
+      - restaurant-network
+    healthcheck:
+      test:
+        ['CMD', 'curl', '-f', 'http://127.0.0.1:${AUTH_SERVICE_PORT}/health']
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  plats-postgres:
+    image: postgres:16
+    container_name: restaurant-plats-db
     env_file: .env
     environment:
       - POSTGRES_DB=${PLATS_SERVICE_POSTGRES_DATABASE}
       - POSTGRES_USER=${PLATS_SERVICE_POSTGRES_USER}
       - POSTGRES_PASSWORD=${PLATS_SERVICE_POSTGRES_PASSWORD}
-    command: -p 5434
+    command: -p 5433
     ports:
-      - '${PLATS_SERVICE_POSTGRES_PORT}:5434'
+      - '${PLATS_SERVICE_POSTGRES_PORT}:5433'
     volumes:
-      - livraison_postgres_data:/var/lib/postgresql/data
+      - plats_postgres_data:/var/lib/postgresql/data
     restart: unless-stopped
     networks:
       - restaurant-network
     healthcheck:
-      test: ['CMD-SHELL', 'pg_isready -U ${PLATS_SERVICE_POSTGRES_PASSWORD} -p 5434']
+      test: ['CMD-SHELL', 'pg_isready -U ${PLATS_SERVICE_POSTGRES_PASSWORD} -p 5433']
       interval: 10s
       timeout: 5s
       retries: 5
+
+  plats-service:
+    build:
+      context: ./packages/plats-service
+      dockerfile: Dockerfile
+    container_name: restaurant-plats-api
+    environment:
+      PORT: ${PLATS_SERVICE_PORT}
+      NODE_ENV: ${PLATS_SERVICE_NODE_ENV}
+      DB_HOST: plats-postgres
+      DB_DATABASE: ${PLATS_SERVICE_POSTGRES_DATABASE}
+      DB_PORT: ${PLATS_SERVICE_POSTGRES_PORT}
+      DB_USER: ${PLATS_SERVICE_POSTGRES_USER}
+      DB_PASSWORD: ${PLATS_SERVICE_POSTGRES_PASSWORD}
+    depends_on:
+      plats-postgres:
+        condition: service_healthy
+    volumes:
+      - ./packages/plats-service:/app
+      - /app/node_modules
+    restart: unless-stopped
+    ports:
+      - '${PLATS_SERVICE_PORT}:${PLATS_SERVICE_PORT}'
+    networks:
+      - restaurant-network
+    healthcheck:
+      test:
+        ['CMD', 'curl', '-f', 'http://127.0.0.1:${PLATS_SERVICE_PORT}/health']
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  commande-postgres:
+    image: postgres:16
+    container_name: restaurant-commande-db
+    env_file: .env
+    environment:
+      - POSTGRES_DB=${COMMANDE_SERVICE_POSTGRES_DATABASE}
+      - POSTGRES_USER=${COMMANDE_SERVICE_POSTGRES_USER}
+      - POSTGRES_PASSWORD=${COMMANDE_SERVICE_POSTGRES_PASSWORD}
+    command: -p 5435
+    ports:
+      - '${COMMANDE_SERVICE_POSTGRES_PORT}:5435'
+    volumes:
+      - commande_postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+    networks:
+      - restaurant-network
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U ${COMMANDE_SERVICE_POSTGRES_PASSWORD} -p 5435']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # commande-service:
+  #   build:
+  #     context: ./packages/commande-service
+  #     dockerfile: Dockerfile
+  #   container_name: restaurant-commande-api
+  #   environment:
+  #     PORT: ${COMMANDE_SERVICE_PORT}
+  #     NODE_ENV: ${COMMANDE_SERVICE_NODE_ENV}
+  #     DB_HOST: commande-postgres
+  #     DB_DATABASE: ${COMMANDE_SERVICE_POSTGRES_DATABASE}
+  #     DB_PORT: ${COMMANDE_SERVICE_POSTGRES_PORT}
+  #     DB_USER: ${COMMANDE_SERVICE_POSTGRES_USER}
+  #     DB_PASSWORD: ${COMMANDE_SERVICE_POSTGRES_PASSWORD}
+  #   depends_on:
+  #     commande-postgres:
+  #       condition: service_healthy
+  #   volumes:
+  #     - ./packages/commande-service:/app
+  #     - /app/node_modules
+  #   restart: unless-stopped
+  #   ports:
+  #     - '${COMMANDE_SERVICE_PORT}:${COMMANDE_SERVICE_PORT}'
+  #   networks:
+  #     - restaurant-network
+  #   healthcheck:
+  #     test:
+  #       ['CMD', 'curl', '-f', 'http://127.0.0.1:${COMMANDE_SERVICE_PORT}/health']
+  #     interval: 30s
+  #     timeout: 10s
+  #     retries: 3
+
+
+  # livraison-postgres:
+  #   image: postgres:16
+  #   container_name: restaurant-livraison-db
+  #   env_file: .env
+  #   environment:
+  #     - POSTGRES_DB=${PLATS_SERVICE_POSTGRES_DATABASE}
+  #     - POSTGRES_USER=${PLATS_SERVICE_POSTGRES_USER}
+  #     - POSTGRES_PASSWORD=${PLATS_SERVICE_POSTGRES_PASSWORD}
+  #   command: -p 5434
+  #   ports:
+  #     - '${PLATS_SERVICE_POSTGRES_PORT}:5434'
+  #   volumes:
+  #     - livraison_postgres_data:/var/lib/postgresql/data
+  #   restart: unless-stopped
+  #   networks:
+  #     - restaurant-network
+  #   healthcheck:
+  #     test: ['CMD-SHELL', 'pg_isready -U ${PLATS_SERVICE_POSTGRES_PASSWORD} -p 5434']
+  #     interval: 10s
+  #     timeout: 5s
+  #     retries: 5
 
   # livraison-service:
   #   build:
@@ -212,6 +267,7 @@ volumes:
   auth_postgres_data:
   auth_redis_data:
   plats_postgres_data:
+  commande_postgres_data:
   livraison_postgres_data:
 
 networks:

@@ -21,9 +21,12 @@ export const commandePlats = pgTable(
     id: serial('id').primaryKey(),
     commandeId: integer('commande_id').notNull().references(() => commandes.id), // Clé étrangère vers la table des commandes
     platId: integer('plat_id').notNull().references(() => plats.id), // Clé étrangère vers la table des plats
-    quantite: integer('quantite').notNull().check((value) => value > 0), // Quantité du plat dans la commande
+    quantite: integer('quantite').notNull().default(1), // Quantité du plat dans la commande
   }
 );
 
 export type SelectCommande = InferSelectModel<typeof commandes>;
 export type InsertCommande = InferInsertModel<typeof commandes>;
+
+export type SelectCommandePlat = InferSelectModel<typeof commandePlats>;
+export type InsertCommandePlat = InferInsertModel<typeof commandePlats>;

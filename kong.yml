@@ -39,3 +39,17 @@ services:
           - PUT
           - DELETE
           - OPTIONS
+  - name: commande-service
+    url: http://localhost:3336
+    # url: http://commande-service:3336
+    routes:
+      - name: commande-service-route
+        paths:
+          - /commande
+        strip_path: true
+        methods:
+          - GET
+          - POST
+          - PUT
+          - DELETE
+          - OPTIONS

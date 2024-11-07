@@ -62,7 +62,8 @@ app.use(errorHandler);
 
 // Routes
 app.use(authRoutes);
-app.use(authGuard, userRoutes);
+// app.use(authGuard, userRoutes);
+app.use(userRoutes);
 
 app.get('/health', (_: Request, res: Response) => {
   res.send('OK');
