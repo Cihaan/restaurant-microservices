@@ -4,18 +4,12 @@
 
   const isTokenValid = ref(false);
 
-  onMounted(async () => {
-    const cookies = document.cookie.split(';');
-    const sidCookie = cookies.find(cookie => cookie.trim().startsWith('connection.sid='));
-    console.log(cookies);
 
-    if (sidCookie) {
-      const sid = sidCookie.split('=')[1];
-      if (await checkTokenValidity(sid)) {
-        isTokenValid.value = true;
-      } else {
-        isTokenValid.value = false;
-      }
+  onMounted(async () => {
+    if (await checkTokenValidity()) {
+      isTokenValid.value = true;
+    } else {
+      isTokenValid.value = false;
     }
   });
 
