@@ -15,7 +15,8 @@
           <input v-model="nouveauClient.email" type="email" placeholder="Email"
             class="border border-gray-300 p-2 rounded-lg">
         </div>
-        <button class="px-4 py-2 bg-emerald-500 text-white rounded-lg hover:bg-emerald-600" type="submit">Ajouter le
+        <button @click="createClient" class="px-4 py-2 bg-emerald-500 text-white rounded-lg hover:bg-emerald-600"
+          type="submit">Ajouter le
           client
         </button>
       </form>
@@ -30,6 +31,7 @@
             <th class="p-4 border">Prenom</th>
             <th class="p-4 border">Nom</th>
             <th class="p-4 border">Email</th>
+            <th class="p-4 border">Role</th>
             <th class="p-4 border">Supprimer</th>
           </tr>
         </thead>
@@ -38,6 +40,7 @@
             <td class="p-4 border">{{ client.fristName }}</td>
             <td class="p-4 border">{{ client.lastName }}</td>
             <td class="p-4 border">{{ client.email }}</td>
+            <td class="p-4 border">{{ client.role }}</td>
             <td>
               <button @click="deleteUser(client.id)" class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600"
                 type="submit">Supprimer
@@ -84,6 +87,34 @@
       const response = await fetch(`http://localhost:8000/auth/users/${id}`, {
         method: 'DELETE',
         credentials: 'include',
+      });
+      if (!response.ok) {
+        throw new Error('Erreur lors du chargement des données');
+      }
+
+      await fetchUsers();
+    } catch (error) {
+      console.error('Erreur lors de la récupération des données:', error);
+    }
+  }
+
+  async function createClient() {
+    try {
+      const response = await fetch('http://localhost:8000/auth/users', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        credentials: 'include',
+        body: JSON.stringify({
+          email: nouveauClient.value.email,
+          fristName: nouveauClient.value.nom,
+          lastName: nouveauClient.value.nom,
+          username: nouveauClient.value.nom,
+          provider: 'local',
+          providerId: 'local',
+          role: 'user',
+        })
       });
       if (!response.ok) {
         throw new Error('Erreur lors du chargement des données');
