@@ -27,7 +27,7 @@ services:
           - DELETE
           - OPTIONS
   - name: livraison-service
-    url: http://livraison-service:3335
+    url: http://livraison-service:3336
     routes:
       - name: livraison-service-route
         paths:
@@ -40,8 +40,7 @@ services:
           - DELETE
           - OPTIONS
   - name: commande-service
-    url: http://localhost:3336
-    # url: http://commande-service:3336
+    url: http://commande-service:3335
     routes:
       - name: commande-service-route
         paths:

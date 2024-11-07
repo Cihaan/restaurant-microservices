@@ -1,14 +1,13 @@
 import express, { Request, Response } from 'express';
 import {
+  addPlatsToCommande,
   createCommande,
   deleteCommande,
   getCommandeById,
   listCommandes,
-  updateCommande,
   removePlatFromCommande,
-  addPlatsToCommande,
-
-} from 'packages/commande-service/src/services/commandes-service';
+  updateCommande,
+} from '../services/commandes-service';
 
 const router = express.Router();
 
@@ -38,7 +37,10 @@ router.get('/commandes/:id', async (req: Request, res: Response) => {
 // Update a commande
 router.put('/commandes/:id', async (req: Request, res: Response) => {
   try {
-    const updatedCommande = await updateCommande(Number(req.params.id), req.body);
+    const updatedCommande = await updateCommande(
+      Number(req.params.id),
+      req.body
+    );
     if (!updatedCommande) {
       return res.status(404).json({ message: 'Commande not found' });
     }
@@ -88,19 +90,24 @@ router.post('/commandes/:id/plats', async (req: Request, res: Response) => {
 });
 
 // Remove a plat from a commande
-router.delete('/commandes/:id/plats/:platId', async (req: Request, res: Response) => {
-  const commandeId = Number(req.params.id);
-  const platId = Number(req.params.platId);
+router.delete(
+  '/commandes/:id/plats/:platId',
+  async (req: Request, res: Response) => {
+    const commandeId = Number(req.params.id);
+    const platId = Number(req.params.platId);
 
-  try {
-    const success = await removePlatFromCommande(commandeId, platId);
-    if (!success) {
-      return res.status(404).json({ message: 'Plat not found in commande' });
+    try {
+      const success = await removePlatFromCommande(commandeId, platId);
+      if (!success) {
+        return res.status(404).json({ message: 'Plat not found in commande' });
+      }
+      res.status(204).send();
+    } catch (error) {
+      res
+        .status(500)
+        .json({ message: 'Error removing plat from commande', error });
     }
-    res.status(204).send();
-  } catch (error) {
-    res.status(500).json({ message: 'Error removing plat from commande', error });
   }
-});
+);
 
 export default router;
