@@ -1,4 +1,5 @@
 import express, { Request, Response } from 'express';
+import { UserRoleEnum } from '../database/schemas/role';
 import {
   createUser,
   deleteUser,
@@ -10,6 +11,7 @@ import {
   isEmailTaken,
   isUsernameTaken,
   listUsers,
+  getUsersByRole,
   searchUsers,
   updateUser,
 } from '../services/user-service';
@@ -19,6 +21,9 @@ const router = express.Router();
 // Create a new user
 router.post('/users', async (req: Request, res: Response) => {
   try {
+    if (!req.body.role) {
+      req.body.role = "client";
+    }
     const newUser = await createUser(req.body);
     res.status(201).json(newUser);
   } catch (error) {
@@ -49,6 +54,31 @@ router.get('/users/email/:email', async (req: Request, res: Response) => {
     res.json(user);
   } catch (error) {
     res.status(500).json({ message: 'Error fetching user', error });
+  }
+});
+
+// get user by role
+router.get('/users/role/:role', async (req: Request, res: Response) => {
+  const role = req.params.role as keyof typeof UserRoleEnum;
+
+  // Vérifier si le rôle est valide
+  if (!Object.values(UserRoleEnum).includes(role)) {
+    return res.status(400).json({ message: 'Role is invalid' });
+  }
+
+  try {
+    // Récupérer les utilisateurs par rôle via le service
+    const users = await getUsersByRole(role);
+
+    if (users.length === 0) {
+      return res.status(404).json({ message: 'No users found for this role' });
+    }
+
+    // Répondre avec la liste des utilisateurs
+    res.json(users);
+  } catch (error) {
+    console.error('Error fetching users by role:', error);
+    res.status(500).json({ message: 'Error fetching users', error });
   }
 });
 

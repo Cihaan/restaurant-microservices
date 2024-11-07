@@ -37,7 +37,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 
 interface Position {
   latitude: number;
@@ -47,32 +47,53 @@ interface Position {
 interface Livreur {
   id: number;
   nom: string;
-  statut: string; // Ex: 'Disponible', 'En Livraison'
+  statut: string;
   position: Position;
 }
 
 interface Livraison {
   id: number;
   livreur: Livreur;
-  statut: string; // Ex: 'En cours', 'Livré'
+  statut: string;
 }
 
-const livreurs = ref<Livreur[]>([
-  { id: 1, nom: 'Jean Martin', statut: 'Disponible', position: { latitude: 48.8566, longitude: 2.3522 } },
-  { id: 2, nom: 'Sophie Dubois', statut: 'En Livraison', position: { latitude: 48.864716, longitude: 2.349014 } },
-  { id: 3, nom: 'Pierre Durand', statut: 'Disponible', position: { latitude: 48.858844, longitude: 2.294351 } }
-]);
+const livreurs = ref<Livreur[]>([]);
+const livraisons = ref<Livraison[]>([]);
 
-const livraisons = ref<Livraison[]>([
-  { id: 101, livreur: livreurs.value[1], statut: 'En cours' },
-]);
+// Fonction pour récupérer les livreurs depuis l'API des users
+async function fetchLivreurs() {
+  try {
+    const response = await fetch('http://localhost:8000/auth/users/role/livreur');
+    if (!response.ok) throw new Error('Erreur lors de la récupération des livreurs');
+    livreurs.value = await response.json();
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+// Fonction pour récupérer les livraisons depuis l'API
+async function fetchLivraisons() {
+  try {
+    const response = await fetch('http://localhost:8000/livraison/deliveries');
+    if (!response.ok) throw new Error('Erreur lors de la récupération des livraisons');
+    livraisons.value = await response.json();
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+// Appelle les fonctions de récupération lors du montage du composant
+onMounted(() => {
+  fetchLivreurs();
+  fetchLivraisons();
+});
 
 // Fonction pour affecter une livraison à un livreur disponible
 function affecterLivraison(livreur: Livreur) {
   if (livreur.statut === 'Disponible') {
     livreur.statut = 'En Livraison';
     const nouvelleLivraison: Livraison = {
-      id: Date.now(), // Génère un nouvel ID pour la livraison
+      id: Date.now(),
       livreur,
       statut: 'En cours',
     };
@@ -82,11 +103,11 @@ function affecterLivraison(livreur: Livreur) {
   }
 }
 
-// Fonction pour mettre à jour le statut d'une livraison (simulé)
+// Fonction pour mettre à jour le statut d'une livraison
 function mettreAJourStatut(livraison: Livraison) {
   if (livraison.statut === 'En cours') {
     livraison.statut = 'Livré';
-    livraison.livreur.statut = 'Disponible'; // Le livreur est à nouveau disponible
+    livraison.livreur.statut = 'Disponible';
   } else {
     alert(`La livraison #${livraison.id} est déjà terminée.`);
   }

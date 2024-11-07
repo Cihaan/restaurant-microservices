@@ -2,20 +2,25 @@ import { InferInsertModel, InferSelectModel } from 'drizzle-orm';
 import {
   pgTable,
   timestamp,
-  uniqueIndex,
-  serial,
   varchar,
+  serial,
+  pgEnum,
+  uniqueIndex,
 } from 'drizzle-orm/pg-core';
+
+// Enum pour les rôles d'utilisateur
+export const UserRoleEnum = pgEnum("user_role", ["admin", "client", "livreur"]);
 
 export const users = pgTable(
   'users',
   {
     id: serial('id').primaryKey(),
     email: varchar('email', { length: 255 }).notNull().unique(),
-    fristName: varchar('first_name', { length: 255 }).notNull(),
+    firstName: varchar('first_name', { length: 255 }).notNull(),
     lastName: varchar('last_name', { length: 255 }).notNull(),
     username: varchar('username', { length: 255 }).notNull().unique(),
     provider: varchar('provider', { length: 50 }).notNull(),
+    role: UserRoleEnum("role").default("client"),
     providerId: varchar('provider_id', { length: 255 }).notNull(),
     createdAt: timestamp('created_at').defaultNow(),
     updatedAt: timestamp('updated_at').defaultNow(),

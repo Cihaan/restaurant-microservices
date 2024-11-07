@@ -32,7 +32,7 @@ services:
       - name: livraison-service-route
         paths:
           - /livraison
-        strip_path: false
+        strip_path: true
         methods:
           - GET
           - POST

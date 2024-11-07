@@ -34,6 +34,7 @@ export const configurePassport = (passport: PassportStatic) => {
               username: profile.displayName,
               fristName: profile.name?.givenName,
               lastName: profile.name?.familyName,
+              role: "client",
               email: profile.emails?.[0]?.value,
               provider: 'google',
               providerId: profile.id,

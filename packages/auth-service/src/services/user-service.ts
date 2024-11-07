@@ -1,6 +1,7 @@
 import { eq, like, or, sql } from 'drizzle-orm';
 import { db } from '../database/db';
 import { InsertUser, SelectUser, users } from '../database/schemas';
+import { UserRoleEnum } from '../database/schemas/role';
 
 // Create a new user
 export async function createUser(userData: InsertUser): Promise<SelectUser> {
@@ -31,6 +32,24 @@ export async function getUserByUsername(
     .from(users)
     .where(eq(users.username, username));
   return user || null;
+}
+
+// Get users by role
+export async function getUsersByRole(
+  role: keyof typeof UserRoleEnum
+): Promise<SelectUser[]> {
+  try {
+    // Recherche des utilisateurs par rôle
+    const usersList = await db
+      .select()
+      .from(users)
+      .where(eq(users.role, UserRoleEnum[role])); // Utilisez l'énumération ici
+
+    return usersList;
+  } catch (error) {
+    console.error('Erreur lors de la récupération des utilisateurs par rôle :', error);
+    throw new Error('Erreur de récupération des utilisateurs');
+  }
 }
 
 // Update a user
