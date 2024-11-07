@@ -26,18 +26,19 @@ import axios, { AxiosInstance } from 'axios';
 export async function createCommande(commandeData: InsertCommande): Promise<SelectCommande> {
   try {
     // Create an Axios client with the base URL
-    const client: AxiosInstance = axios.create({
-      baseURL: 'http://localhost:8000/auth',
-      timeout: 5000,
-    });
+    // const client: AxiosInstance = axios.create({
+    //   baseURL: 'http://localhost:8000/auth',
+    //   timeout: 5000,
+    // });
 
-    // Check if the userId exists in the users service
-    const response = await client.get('/users/1');
-    const user = response.data;
-    if (!user) {
-      throw new Error(`User with ID ${commandeData.userId} does not exist.`);
-    }
-    commandeData.userId = user.id
+    // // Check if the userId exists in the users service
+    // const response = await client.get('/users/1');
+    // const user = response.data;
+    // if (!user) {
+    //   throw new Error(`User with ID ${commandeData.userId} does not exist.`);
+    // }
+    commandeData.userId = 1
+    commandeData.status = "En attente d'un livreur"
     const [newCommande] = await db.insert(commandes).values(commandeData).returning();
     return newCommande;
   } catch (error) {
