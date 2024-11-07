@@ -45,7 +45,7 @@ async function fetchPlats() {
     const response = await fetch('http://localhost:8000/plats', {
       method: 'GET',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       }
     });
     if (!response.ok) {

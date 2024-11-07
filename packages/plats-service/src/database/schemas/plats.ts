@@ -9,8 +9,8 @@ export const plats = pgTable(
     description: varchar('description').notNull(),
     price: varchar('price').notNull(),
     image: varchar('image'),
-    createdAt: timestamp('created_at').defaultNow(),
-    updatedAt: timestamp('updated_at').defaultNow()
+    createdAt: varchar('created_at'),
+    updatedAt: varchar('updated_at')
   }
 );
 

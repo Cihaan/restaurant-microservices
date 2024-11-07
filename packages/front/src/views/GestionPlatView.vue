@@ -50,8 +50,8 @@
           </td>
           <td class="p-4 border">{{ plat.description }}</td>
           <td class="p-4 border">{{ plat?.price }}</td>
-          <td class="p-4 border flex space-x-2">
-            <button @click="editerPlat(plat)" class="px-3 py-1 bg-blue-500 text-white rounded-lg hover:bg-blue-600">
+          <td class="p-4 border ">
+            <button @click="editerPlat(plat)" class="px-3 mb-2 py-1 bg-blue-500 text-white rounded-lg hover:bg-blue-600">
               Modifier
             </button>
             <button @click="supprimerPlat(plat.id)" class="px-3 py-1 bg-red-500 text-white rounded-lg hover:bg-red-600">
