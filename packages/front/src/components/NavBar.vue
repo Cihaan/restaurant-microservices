@@ -1,5 +1,21 @@
 <script setup lang="ts">
+  import { checkTokenValidity } from '@/services/user-service';
+  import { onMounted, ref } from 'vue';
 
+  const isTokenValid = ref(false);
+
+
+  onMounted(async () => {
+    if (await checkTokenValidity()) {
+      isTokenValid.value = true;
+    } else {
+      isTokenValid.value = false;
+    }
+  });
+
+  const loginWithGoogle = () => {
+    window.location.href = 'http://localhost:3333/login/federated/google';
+  };
 </script>
 
 <template>
@@ -10,22 +26,24 @@
         <li>
           <router-link to="/" class="hover:underline">Menu</router-link>
         </li>
-        <li>
+        <li v-if="isTokenValid">
           <router-link to="/gestion-client" class="hover:underline">Gestion client</router-link>
         </li>
-        <li>
+        <li v-if="isTokenValid">
           <router-link to="/gestion-commande" class="hover:underline">Gestion commande</router-link>
-        </li><li>
+        </li>
+        <li v-if="isTokenValid">
           <router-link to="/gestion-plats" class="hover:underline">Gestion plats</router-link>
         </li>
         <li>
           <router-link to="/panier" class="hover:underline">Panier</router-link>
+        </li>
+        <li v-if="!isTokenValid">
+          <button class="hover:underline" @click="loginWithGoogle">Login with Google</button>
         </li>
       </ul>
     </div>
   </nav>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>
