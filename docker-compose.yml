@@ -22,7 +22,7 @@ services:
     networks:
       - restaurant-network
     depends_on:
-      - auth-service
+      # - auth-service
       - plats-service
       # - livraison-service
 
