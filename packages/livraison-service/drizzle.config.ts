@@ -1,9 +1,12 @@
-// drizzle.config.ts
-import { config } from 'dotenv';
-config();
-
-export default {
-  schema: "./src/models",  // Dossier où se trouvent tes schémas Drizzle
-  out: "./migrations",    // Dossier où les migrations seront générées
-  connectionString: process.env.DATABASE_URL,  // Variable d'environnement pour la DB
-};
+import { defineConfig } from 'drizzle-kit';
+export default defineConfig({
+  dialect: 'postgresql',
+  out: './drizzle',
+  schema: './src/database/schemas/index.ts',
+  migrations: {
+    schema: 'public',
+  },
+  dbCredentials: {
+    url: `postgresql://${process.env.DB_USER}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}:${process.env.DB_PORT}/${process.env.DB_DATABASE}`,
+  },
+});

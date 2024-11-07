@@ -1,54 +1,46 @@
-// src/services/driver-service.ts
-
-import { DriverSchema } from '../database/schemas/driver';
+import { eq } from 'drizzle-orm';
 import { db } from '../database/db';
+import { InsertDriver, drivers, SelectDriver } from '../database/schemas';
 
-interface Driver {
-  id: string;
-  name: string;
-  status: 'available' | 'in_progress';
-  // Ajoutez d'autres propriétés nécessaires pour un livreur
+// Create a new driver
+export async function createDriver(driverData: InsertDriver): Promise<SelectDriver> {
+  const [newDriver] = await db.insert(drivers).values(driverData).returning();
+  return newDriver;
 }
 
-export class DriverService {
-  /**
-   * Récupère un livreur disponible pour une livraison.
-   * @returns Le livreur disponible ou null s'il n'y en a aucun.
-   */
-  static async getAvailableDriver(): Promise<Driver | null> {
-    // Cherche un livreur avec le statut "available" dans la base de données
-    const availableDriver = await db.findOne('drivers', { status: 'available' }); // Exemple de syntaxe
+// Read a driver by ID
+export async function getDriverById(id: number): Promise<SelectDriver | null> {
+  const [driver] = await db.select().from(drivers).where(eq(drivers.id, id));
+  return driver || null;
+}
 
-    return availableDriver || null;
-  }
+// Update a driver
+export async function updateDriver(
+  id: number,
+  driverData: Partial<InsertDriver>
+): Promise<SelectDriver | null> {
+  const [updatedDriver] = await db
+    .update(drivers)
+    .set(driverData)
+    .where(eq(drivers.id, id))
+    .returning();
+  return updatedDriver || null;
+}
 
-  /**
-   * Met à jour le statut d'un livreur.
-   * @param driverId L'ID du livreur à mettre à jour.
-   * @param status Le nouveau statut du livreur.
-   * @returns Le livreur avec le statut mis à jour.
-   */
-  static async updateDriverStatus(driverId: string, status: 'available' | 'in_progress'): Promise<Driver | null> {
-    const driver = await db.findOne('drivers', { id: driverId }); // Exemple de syntaxe
+// Delete a driver
+export async function deleteDriver(id: number): Promise<boolean> {
+  const result = await db.delete(drivers).where(eq(drivers.id, id));
+  return result > 0;
+}
 
-    if (!driver) {
-      throw new Error(`Driver with ID ${driverId} not found`);
-    }
-
-    driver.status = status;
-    await db.update('drivers', driverId, { status }); // Exemple de syntaxe
-
-    return driver;
-  }
-
-  /**
-   * Récupère tous les livreurs disponibles.
-   * @returns La liste des livreurs disponibles.
-   */
-  static async getAllAvailableDrivers(): Promise<Driver[]> {
-    // Cherche tous les livreurs avec le statut "available" dans la base de données
-    const availableDrivers = await db.findMany('drivers', { status: 'available' }); // Exemple de syntaxe
-
-    return availableDrivers;
-  }
+// List drivers with pagination
+export async function listDrivers(
+  page = 1,
+  pageSize = 10
+): Promise<SelectDriver[]> {
+  return db
+    .select()
+    .from(drivers)
+    .limit(pageSize)
+    .offset((page - 1) * pageSize);
 }

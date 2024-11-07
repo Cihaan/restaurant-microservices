@@ -4,4 +4,4 @@ import { InsertDriver, SelectDriver, drivers } from './driver';
 export { InsertDelivery, SelectDelivery };
 export { InsertDriver, SelectDriver };
 
-export { deliveries };
+export { deliveries, drivers };

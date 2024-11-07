@@ -1,5 +1,5 @@
 {
-  "id": "ae5e6e63-df6b-4780-8257-575edce9b8c2",
+  "id": "7f47b806-c75b-4b97-9789-9cbfbc053e7c",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -17,13 +17,6 @@
         "assigned_driver_id": {
           "name": "assigned_driver_id",
           "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "status": {
-          "name": "status",
-          "type": "delivery_status",
-          "typeSchema": "public",
           "primaryKey": false,
           "notNull": true
         },
@@ -48,23 +41,36 @@
           "default": "now()"
         }
       },
-      "indexes": {
-        "assigned_driver_id_idx": {
-          "name": "assigned_driver_id_idx",
-          "columns": [
-            {
-              "expression": "assigned_driver_id",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": true,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "public.drivers": {
+      "name": "drivers",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
         }
       },
+      "indexes": {},
       "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}

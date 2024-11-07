@@ -1,74 +1,71 @@
-// src/routes/drivers.ts
+import express, { Request, Response } from 'express';
+import { createDriver, deleteDriver, getDriverById, listDrivers, updateDriver } from '../services/driver-service';
 
-import { Router, Request, Response } from 'express';
-import { DriverService } from '../services/driver-service';
+const router = express.Router();
 
-const router = Router();
-
-/**
- * Récupère tous les livreurs disponibles.
- */
-router.get('/available', async (req: Request, res: Response) => {
+// Create a new driver
+router.post('/drivers', async (req: Request, res: Response) => {
   try {
-    const availableDrivers = await DriverService.getAllAvailableDrivers();
-    res.status(200).json(availableDrivers);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Erreur lors de la récupération des livreurs disponibles' });
-  }
-});
-
-/**
- * Récupère un livreur par son ID.
- */
-router.get('/:driverId', async (req: Request, res: Response) => {
-  const { driverId } = req.params;
-
-  try {
-    const driver = await DriverService.getDriverById(driverId);
-    if (driver) {
-      res.status(200).json(driver);
-    } else {
-      res.status(404).json({ message: 'Livreur non trouvé' });
-    }
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Erreur lors de la récupération du livreur' });
-  }
-});
-
-/**
- * Met à jour le statut d'un livreur.
- */
-router.put('/:driverId/status', async (req: Request, res: Response) => {
-  const { driverId } = req.params;
-  const { status } = req.body;
-
-  try {
-    const updatedDriver = await DriverService.updateDriverStatus(driverId, status);
-    if (updatedDriver) {
-      res.status(200).json(updatedDriver);
-    } else {
-      res.status(404).json({ message: 'Livreur non trouvé' });
-    }
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Erreur lors de la mise à jour du statut du livreur' });
-  }
-});
-
-/**
- * Ajoute un nouveau livreur.
- */
-router.post('/', async (req: Request, res: Response) => {
-  const driverData = req.body;
-
-  try {
-    const newDriver = await DriverService.createDriver(driverData);
+    console.log('req.body', req.body);
+    const newDriver = await createDriver(req.body);
     res.status(201).json(newDriver);
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Erreur lors de l\'ajout du livreur' });
+    res.status(500).json({ message: 'Error creating driver', error });
+  }
+});
+
+// Get a driver by ID
+router.get('/drivers/:id', async (req: Request, res: Response) => {
+  try {
+    const driver = await getDriverById(Number(req.params.id));
+    if (!driver) {
+      return res.status(404).json({ message: 'Driver not found' });
+    }
+    res.json(driver);
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching driver', error });
+  }
+});
+
+// Update a driver
+router.put('/drivers/:id', async (req: Request, res: Response) => {
+  try {
+    console.log('update driver.id', req.params.id);
+    console.log('update driver', req.body);
+    const updatedDriver = await updateDriver(Number(req.params.id), req.body);
+    if (!updatedDriver) {
+      return res.status(404).json({ message: 'Driver not found' });
+    }
+    res.json(updatedDriver);
+  } catch (error) {
+    res.status(500).json({ message: 'Error updating driver', error });
+  }
+});
+
+// Delete a driver
+router.delete('/drivers/:id', async (req: Request, res: Response) => {
+  try {
+    console.log('req.params.id', req.params.id);
+    const success = await deleteDriver(Number(req.params.id));
+    if (!success) {
+      return res.status(404).json({ message: 'Driver not found' });
+    }
+    res.status(204).send();
+  } catch (error) {
+    res.status(500).json({ message: 'Error deleting driver', error });
+  }
+});
+
+// List drivers with pagination
+router.get('/drivers', async (req: Request, res: Response) => {
+  const page = Number(req.query.page) || 1;
+  const pageSize = Number(req.query.pageSize) || 10;
+
+  try {
+    const drivers = await listDrivers(page, pageSize);
+    res.json(drivers);
+  } catch (error) {
+    res.status(500).json({ message: 'Error listing drivers', error });
   }
 });
 

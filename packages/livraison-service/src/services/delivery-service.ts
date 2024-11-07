@@ -1,93 +1,46 @@
-// src/services/delivery-service.ts
-
-import { DeliverySchema } from '../database/schemas/delivery';
-import { DriverSchema } from '../database/schemas/driver';
+import { eq } from 'drizzle-orm';
 import { db } from '../database/db';
-import { DriverService } from './driver-service';
+import { InsertDelivery, deliveries, SelectDelivery } from '../database/schemas';
 
-interface Delivery {
-  id: string;
-  assignedDriverId?: string;
-  status: 'pending' | 'in_progress' | 'completed';
-  deliveryDate: Date;
-  // Ajoutez d'autres propriétés nécessaires pour une livraison
+// Create a new delivery
+export async function createDelivery(deliveryData: InsertDelivery): Promise<SelectDelivery> {
+  const [newDelivery] = await db.insert(deliveries).values(deliveryData).returning();
+  return newDelivery;
 }
 
-export class DeliveryService {
-  /**
-   * Crée une nouvelle livraison dans la base de données.
-   * @param deliveryData Les données de la livraison à créer.
-   * @returns La livraison créée.
-   */
-  static async createDelivery(deliveryData: Omit<Delivery, 'id'>): Promise<Delivery> {
-    const newDelivery = {
-      ...deliveryData,
-      id: generateUniqueId(), // Remplacez par votre propre fonction de génération d'ID
-      status: 'pending',
-    };
-
-    // Ajoute la livraison dans la base de données
-    await db.insert('deliveries', newDelivery); // Exemple de syntaxe, ajustez selon votre ORM
-
-    return newDelivery;
-  }
-
-  /**
-   * Met à jour le statut d'une livraison.
-   * @param deliveryId L'ID de la livraison à mettre à jour.
-   * @param status Le nouveau statut de la livraison.
-   * @returns La livraison mise à jour.
-   */
-  static async updateDeliveryStatus(deliveryId: string, status: 'pending' | 'in_progress' | 'completed'): Promise<Delivery | null> {
-    const delivery = await db.findOne('deliveries', { id: deliveryId }); // Exemple de syntaxe
-
-    if (!delivery) {
-      throw new Error(`Delivery with ID ${deliveryId} not found`);
-    }
-
-    delivery.status = status;
-    await db.update('deliveries', deliveryId, { status }); // Exemple de syntaxe
-
-    return delivery;
-  }
-
-  /**
-   * Affecte un livreur disponible à une livraison.
-   * @param deliveryId L'ID de la livraison.
-   * @returns La livraison avec le livreur assigné.
-   */
-  static async assignDriverToDelivery(deliveryId: string): Promise<Delivery | null> {
-    const delivery = await db.findOne('deliveries', { id: deliveryId });
-
-    if (!delivery) {
-      throw new Error(`Delivery with ID ${deliveryId} not found`);
-    }
-
-    if (delivery.status !== 'pending') {
-      throw new Error(`Delivery with ID ${deliveryId} is not in a state that can be assigned`);
-    }
-
-    const availableDriver = await DriverService.getAvailableDriver();
-
-    if (!availableDriver) {
-      throw new Error('No available drivers at the moment');
-    }
-
-    delivery.assignedDriverId = availableDriver.id;
-    delivery.status = 'in_progress';
-
-    // Met à jour la livraison et le statut du livreur dans la base de données
-    await db.update('deliveries', deliveryId, { assignedDriverId: availableDriver.id, status: 'in_progress' });
-    await DriverService.updateDriverStatus(availableDriver.id, 'in_progress');
-
-    return delivery;
-  }
+// Read a delivery by ID
+export async function getDeliveryById(id: number): Promise<SelectDelivery | null> {
+  const [delivery] = await db.select().from(deliveries).where(eq(deliveries.id, id));
+  return delivery || null;
 }
 
-/**
- * Fonction auxiliaire pour générer un ID unique.
- * Vous pouvez remplacer cette fonction par une solution plus robuste.
- */
-function generateUniqueId(): string {
-  return Math.random().toString(36).substr(2, 9);
+// Update a delivery
+export async function updateDelivery(
+  id: number,
+  deliveryData: Partial<InsertDelivery>
+): Promise<SelectDelivery | null> {
+  const [updatedDelivery] = await db
+    .update(deliveries)
+    .set(deliveryData)
+    .where(eq(deliveries.id, id))
+    .returning();
+  return updatedDelivery || null;
+}
+
+// Delete a delivery
+export async function deleteDelivery(id: number): Promise<boolean> {
+  const result = await db.delete(deliveries).where(eq(deliveries.id, id));
+  return result > 0;
+}
+
+// List deliveries with pagination
+export async function listDeliveries(
+  page = 1,
+  pageSize = 10
+): Promise<SelectDelivery[]> {
+  return db
+    .select()
+    .from(deliveries)
+    .limit(pageSize)
+    .offset((page - 1) * pageSize);
 }

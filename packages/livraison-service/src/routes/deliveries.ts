@@ -1,74 +1,71 @@
-// src/routes/deliveries.ts
+import express, { Request, Response } from 'express';
+import { createDelivery, deleteDelivery, getDeliveryById, listDeliveries, updateDelivery } from '../services/delivery-service';
 
-import { Router, Request, Response } from 'express';
-import { DeliveryService } from '../services/delivery-service';
+const router = express.Router();
 
-const router = Router();
-
-/**
- * Crée une nouvelle livraison.
- */
-router.post('/', async (req: Request, res: Response) => {
+// Create a new delivery
+router.post('/deliveries', async (req: Request, res: Response) => {
   try {
-    const deliveryData = req.body;
-    const newDelivery = await DeliveryService.createDelivery(deliveryData);
+    console.log('req.body', req.body);
+    const newDelivery = await createDelivery(req.body);
     res.status(201).json(newDelivery);
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Erreur lors de la création de la livraison' });
+    res.status(500).json({ message: 'Error creating delivery', error });
   }
 });
 
-/**
- * Met à jour le statut d'une livraison.
- */
-router.put('/:deliveryId/status', async (req: Request, res: Response) => {
-  const { deliveryId } = req.params;
-  const { status } = req.body;
-
+// Get a delivery by ID
+router.get('/deliveries/:id', async (req: Request, res: Response) => {
   try {
-    const updatedDelivery = await DeliveryService.updateDeliveryStatus(deliveryId, status);
-    if (updatedDelivery) {
-      res.status(200).json(updatedDelivery);
-    } else {
-      res.status(404).json({ message: 'Livraison non trouvée' });
+    const delivery = await getDeliveryById(Number(req.params.id));
+    if (!delivery) {
+      return res.status(404).json({ message: 'Delivery not found' });
     }
+    res.json(delivery);
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Erreur lors de la mise à jour du statut de la livraison' });
+    res.status(500).json({ message: 'Error fetching delivery', error });
   }
 });
 
-/**
- * Affecte un livreur disponible à une livraison.
- */
-router.put('/:deliveryId/assign-driver', async (req: Request, res: Response) => {
-  const { deliveryId } = req.params;
-
+// Update a delivery
+router.put('/deliveries/:id', async (req: Request, res: Response) => {
   try {
-    const assignedDelivery = await DeliveryService.assignDriverToDelivery(deliveryId);
-    if (assignedDelivery) {
-      res.status(200).json(assignedDelivery);
-    } else {
-      res.status(404).json({ message: 'Livraison non trouvée ou aucun livreur disponible' });
+    console.log('update delivery.id', req.params.id);
+    console.log('update delivery', req.body);
+    const updatedDelivery = await updateDelivery(Number(req.params.id), req.body);
+    if (!updatedDelivery) {
+      return res.status(404).json({ message: 'Delivery not found' });
     }
+    res.json(updatedDelivery);
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Erreur lors de l\'affectation du livreur' });
+    res.status(500).json({ message: 'Error updating delivery', error });
   }
 });
 
-/**
- * Récupère la liste de toutes les livraisons.
- */
-router.get('/', async (req: Request, res: Response) => {
+// Delete a delivery
+router.delete('/deliveries/:id', async (req: Request, res: Response) => {
   try {
-    // Remplacez `getAllDeliveries` par la fonction appropriée si vous souhaitez limiter les livraisons (par statut, etc.)
-    const deliveries = await DeliveryService.getAllDeliveries();
-    res.status(200).json(deliveries);
+    console.log('req.params.id', req.params.id);
+    const success = await deleteDelivery(Number(req.params.id));
+    if (!success) {
+      return res.status(404).json({ message: 'Delivery not found' });
+    }
+    res.status(204).send();
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Erreur lors de la récupération des livraisons' });
+    res.status(500).json({ message: 'Error deleting delivery', error });
+  }
+});
+
+// List deliveries with pagination
+router.get('/deliveries', async (req: Request, res: Response) => {
+  const page = Number(req.query.page) || 1;
+  const pageSize = Number(req.query.pageSize) || 10;
+
+  try {
+    const deliveries = await listDeliveries(page, pageSize);
+    res.json(deliveries);
+  } catch (error) {
+    res.status(500).json({ message: 'Error listing deliveries', error });
   }
 });
 
