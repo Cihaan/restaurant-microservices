@@ -1,11 +1,48 @@
 import { eq } from 'drizzle-orm';
 import { db } from '../database/db';
 import { InsertCommande, commandes, SelectCommande, SelectCommandePlat, InsertCommandePlat, commandePlats } from '../database/schemas';
+import axios, { AxiosInstance } from 'axios';
+
 
 // Create a new commande
+// export async function createCommande(commandeData: InsertCommande): Promise<SelectCommande> {
+//   try {
+//     // Create an Axios client with the base URL
+//     const client: AxiosInstance = axios.create({
+//       baseURL: 'http://localhost:8000/auth',
+//       timeout: 5000,
+//     });
+
+//     // Check if the userId exists in the users service
+//     const response = await client.get(`/users/${commandeData.userId}`);
+//     const user = response.data;
+//     if (!user) {
+//       throw new Error(`User with ID ${commandeData.userId} does not exist.`);
+//     }
+//   const [newCommande] = await db.insert(commandes).values(commandeData).returning();
+//   return newCommande;
+// }
+// }
 export async function createCommande(commandeData: InsertCommande): Promise<SelectCommande> {
-  const [newCommande] = await db.insert(commandes).values(commandeData).returning();
-  return newCommande;
+  try {
+    // Create an Axios client with the base URL
+    const client: AxiosInstance = axios.create({
+      baseURL: 'http://localhost:8000/auth',
+      timeout: 5000,
+    });
+
+    // Check if the userId exists in the users service
+    const response = await client.get('/users/1');
+    const user = response.data;
+    if (!user) {
+      throw new Error(`User with ID ${commandeData.userId} does not exist.`);
+    }
+    commandeData.userId = user.id
+    const [newCommande] = await db.insert(commandes).values(commandeData).returning();
+    return newCommande;
+  } catch (error) {
+    throw error;
+  }
 }
 
 // Read a commande by ID

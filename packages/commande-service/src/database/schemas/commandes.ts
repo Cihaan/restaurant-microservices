@@ -8,7 +8,7 @@ export const commandes = pgTable(
   'commandes',
   {
     id: serial('id').primaryKey(),
-    userId: integer('user_id').notNull().references(() => users.id), // Clé étrangère vers la table des utilisateurs
+    userId: integer('user_id').notNull(), // Clé étrangère vers la table des utilisateurs
     status: varchar('status', { length: 50 }).notNull(), // Le statut de la commande
     createdAt: timestamp('created_at').defaultNow(),
     updatedAt: timestamp('updated_at').defaultNow(),
@@ -20,7 +20,7 @@ export const commandePlats = pgTable(
   {
     id: serial('id').primaryKey(),
     commandeId: integer('commande_id').notNull().references(() => commandes.id), // Clé étrangère vers la table des commandes
-    platId: integer('plat_id').notNull().references(() => plats.id), // Clé étrangère vers la table des plats
+    platId: integer('plat_id').notNull(),
     quantite: integer('quantite').notNull().default(1), // Quantité du plat dans la commande
   }
 );

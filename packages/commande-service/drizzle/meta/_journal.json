@@ -8,6 +8,20 @@
       "when": 1730972366805,
       "tag": "0000_old_mandroid",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1730983662971,
+      "tag": "0001_same_puppet_master",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1730983924352,
+      "tag": "0002_outgoing_crystal",
+      "breakpoints": true
     }
   ]
 }
