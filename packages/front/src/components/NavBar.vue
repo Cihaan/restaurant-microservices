@@ -1,15 +1,21 @@
 <script setup lang="ts">
-  import { checkTokenValidity } from '@/services/user-service';
+  import { isAdmin, isAuthenticated } from '@/services/user-service';
   import { onMounted, ref } from 'vue';
 
-  const isTokenValid = ref(false);
+  const isAuthed = ref(false);
+  const isAd = ref(false);
 
 
   onMounted(async () => {
-    if (await checkTokenValidity()) {
-      isTokenValid.value = true;
+    if (await isAuthenticated()) {
+      isAuthed.value = true;
+      if (await isAdmin()) {
+        isAd.value = true;
+      } else {
+        isAd.value = false;
+      }
     } else {
-      isTokenValid.value = false;
+      isAuthed.value = false;
     }
   });
 
@@ -26,19 +32,19 @@
         <li>
           <router-link to="/" class="hover:underline">Menu</router-link>
         </li>
-        <li v-if="isTokenValid">
+        <li v-if="isAd">
           <router-link to="/gestion-client" class="hover:underline">Gestion client</router-link>
         </li>
-        <li v-if="isTokenValid">
+        <li v-if="isAuthed">
           <router-link to="/gestion-commande" class="hover:underline">Gestion commande</router-link>
         </li>
-        <li v-if="isTokenValid">
+        <li v-if="isAd">
           <router-link to="/gestion-plats" class="hover:underline">Gestion plats</router-link>
         </li>
         <li>
           <router-link to="/panier" class="hover:underline">Panier</router-link>
         </li>
-        <li v-if="!isTokenValid">
+        <li v-if="!isAuthed">
           <button class="hover:underline" @click="loginWithGoogle">Login with Google</button>
         </li>
       </ul>

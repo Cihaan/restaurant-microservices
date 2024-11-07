@@ -1,9 +1,9 @@
 import { InferInsertModel, InferSelectModel } from 'drizzle-orm';
 import {
   pgTable,
+  serial,
   timestamp,
   uniqueIndex,
-  serial,
   varchar,
 } from 'drizzle-orm/pg-core';
 
@@ -17,6 +17,7 @@ export const users = pgTable(
     username: varchar('username', { length: 255 }).notNull().unique(),
     provider: varchar('provider', { length: 50 }).notNull(),
     providerId: varchar('provider_id', { length: 255 }).notNull(),
+    role: varchar('role', { length: 50 }).notNull().default('admin'),
     createdAt: timestamp('created_at').defaultNow(),
     updatedAt: timestamp('updated_at').defaultNow(),
   },

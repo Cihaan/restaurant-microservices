@@ -1,4 +1,4 @@
-import { checkTokenValidity } from '@/services/user-service'
+import { isAdmin, isAuthenticated } from '@/services/user-service'
 import GestionClientView from '@/views/GestionClientView.vue'
 import GestionCommandeView from '@/views/GestionCommandeView.vue'
 import GestionPlatView from '@/views/GestionPlatView.vue'
@@ -15,6 +15,7 @@ const router = createRouter({
       component: MenuView,
       meta: {
         requiresAuth: false,
+        requiresAdmin: false,
       },
     },
     {
@@ -23,6 +24,7 @@ const router = createRouter({
       component: PanierView,
       meta: {
         requiresAuth: false,
+        requiresAdmin: false,
       },
     },
     {
@@ -31,6 +33,7 @@ const router = createRouter({
       component: GestionClientView,
       meta: {
         requiresAuth: true,
+        requiresAdmin: true,
       },
     },
     {
@@ -39,6 +42,7 @@ const router = createRouter({
       component: GestionCommandeView,
       meta: {
         requiresAuth: true,
+        requiresAdmin: false,
       },
     },
     {
@@ -47,21 +51,23 @@ const router = createRouter({
       component: GestionPlatView,
       meta: {
         requiresAuth: true,
+        requiresAdmin: false,
       },
     },
   ],
 })
 
 router.beforeEach(async (to, from) => {
-  console.log('hey')
+  if (to.meta.requiresAdmin) {
+    if (await isAdmin()) {
+      return true
+    } else {
+      router.push('/')
+    }
+  }
+
   if (to.meta.requiresAuth) {
-    const cookies = document.cookie.split(';')
-    const sidCookie = cookies.find((cookie) => cookie.trim().startsWith('connection.sid='))
-    const sid = sidCookie ? sidCookie.split('=')[1] : null
-
-    console.log('SID', sid)
-
-    if (await checkTokenValidity(sid)) {
+    if (await isAuthenticated()) {
       return true
     } else {
       router.push('/')

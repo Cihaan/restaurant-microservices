@@ -14,7 +14,7 @@ import path from 'path';
 import { redisStore } from './caching/redis';
 import { closeConnections, runMigrations } from './database/db';
 import { errorHandler } from './middleware/error';
-import { authGuard } from './middleware/guard';
+import { adminGuard, authGuard } from './middleware/guard';
 import authRoutes, { configurePassport } from './routes/auth';
 import userRoutes from './routes/users';
 
@@ -76,6 +76,14 @@ app.use(errorHandler);
 app.use(authRoutes);
 // app.use(authGuard, userRoutes);
 app.use(userRoutes);
+
+app.get('/is-authenticated', authGuard, (_: Request, res: Response) => {
+  res.json({ isAuthenticated: true });
+});
+
+app.get('/is-admin', adminGuard, (_: Request, res: Response) => {
+  res.json({ isAdmin: true });
+});
 
 app.get('/health', (_: Request, res: Response) => {
   res.send('OK');
