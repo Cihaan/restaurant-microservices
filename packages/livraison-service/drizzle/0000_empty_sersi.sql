@@ -8,6 +8,9 @@ CREATE TABLE IF NOT EXISTS "deliveries" (
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "drivers" (
 	"id" serial PRIMARY KEY NOT NULL,
-	"name" varchar(255) NOT NULL,
+	"driver_id" integer NOT NULL,
+	"order_id" integer NOT NULL,
+	"status" "driver_status" DEFAULT 'available',
+	"assigned_at" timestamp DEFAULT now(),
 	"created_at" timestamp DEFAULT now()
 );

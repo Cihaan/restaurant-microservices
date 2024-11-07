@@ -4,22 +4,21 @@ import {
   timestamp,
   varchar,
   serial,
-  // pgEnum,
+  integer,
+  pgEnum,
   // uniqueIndex,
 } from 'drizzle-orm/pg-core';
 
-// Enum pour les statuts de conducteur
-// export const DriverStatusEnum = pgEnum('driver_status', [
-//   'available',   // Disponible
-//   'in_delivery', // En cours de livraison
-// ]);
+export const DriverStatusEnum = pgEnum('driver_status', ['pending', 'available', 'in_delivery']);
 
 export const drivers = pgTable(
   'drivers',
   {
     id: serial('id').primaryKey(),
-    name: varchar('name', { length: 255 }).notNull(),
-    // status: DriverStatusEnum('status').notNull(),
+    driverId: integer('driver_id').notNull(), // ID du livreur (référence à la table des utilisateurs)
+    orderId: integer('order_id').notNull(),
+    status: DriverStatusEnum('status').default("available"),
+    assignedAt: timestamp('assigned_at').defaultNow(),
     createdAt: timestamp('created_at').defaultNow()
   }
   // },

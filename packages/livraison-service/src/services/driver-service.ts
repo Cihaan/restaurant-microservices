@@ -1,6 +1,7 @@
 import { eq } from 'drizzle-orm';
 import { db } from '../database/db';
 import { InsertDriver, drivers, SelectDriver } from '../database/schemas';
+import { users } from 'packages/auth-service/src/database/schemas';
 
 // Create a new driver
 export async function createDriver(driverData: InsertDriver): Promise<SelectDriver> {
@@ -13,6 +14,28 @@ export async function getDriverById(id: number): Promise<SelectDriver | null> {
   const [driver] = await db.select().from(drivers).where(eq(drivers.id, id));
   return driver || null;
 }
+
+// Get available drivers
+export async function getAvailableDrivers(): Promise<{ id: number, name: string, status: string }[]> {
+  const availableDrivers = await db
+    .select({
+      driverId: drivers.id,
+      firstName: users.firstName,
+      lastName: users.lastName,
+      status: drivers.status,
+    })
+    .from(drivers)
+    .innerJoin(users, eq(drivers.id, users.id))
+    .where(eq(drivers.status, 'available'));
+
+  return availableDrivers.map(driver => ({
+    id: driver.driverId,
+    name: driver.firstName,
+    lastName: driver.lastName,
+    status: driver.status
+  }));
+}
+
 
 // Update a driver
 export async function updateDriver(
