@@ -5,15 +5,8 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1730884083799,
-      "tag": "0000_perpetual_stingray",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1730897684996,
-      "tag": "0001_striped_thunderbolt",
+      "when": 1730973381868,
+      "tag": "0000_slippery_grandmaster",
       "breakpoints": true
     }
   ]

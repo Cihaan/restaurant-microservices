@@ -4,7 +4,9 @@ import { InsertPlat, plats, SelectPlat } from '../database/schemas';
 
 // Create a new user
 export async function createPlat(platData: InsertPlat): Promise<SelectPlat> {
-  const [newPlat] = await db.insert(plats).values(platData).returning();
+  const [newPlat] = await db.insert(plats).values(
+    { ...platData, createdAt: new Date().toDateString(), updatedAt: new Date().toDateString() }
+  ).returning();
   return newPlat;
 }
 
@@ -20,9 +22,11 @@ export async function updatePlat(
   id: number,
   platData: Partial<InsertPlat>
 ): Promise<SelectPlat | null> {
+  console.log('update funct plat.id', id);
+  console.log('update plat', platData);
   const [updatedPlat] = await db
     .update(plats)
-    .set(platData)
+    .set({ ...platData, updatedAt: new Date().toDateString() })
     .where(eq(plats.id, id))
     .returning();
   return updatedPlat || null;

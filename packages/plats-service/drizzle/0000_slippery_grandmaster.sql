@@ -3,7 +3,7 @@ CREATE TABLE IF NOT EXISTS "plats" (
 	"name" varchar NOT NULL,
 	"description" varchar NOT NULL,
 	"price" varchar NOT NULL,
-	"image" varchar NOT NULL,
-	"created_at" timestamp DEFAULT now() NOT NULL,
-	"updated_at" timestamp DEFAULT now() NOT NULL
+	"image" varchar,
+	"created_at" varchar,
+	"updated_at" varchar
 );

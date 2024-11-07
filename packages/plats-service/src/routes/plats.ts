@@ -1,5 +1,6 @@
 import express, { Request, Response } from 'express';
 import { createPlat, deletePlat, getPlatById, listPlats, updatePlat } from '../services/cuisine-service';
+import { numeric } from 'drizzle-orm/pg-core';
 
 const router = express.Router();
 
@@ -30,17 +31,35 @@ router.get('/plats/:id', async (req: Request, res: Response) => {
 // Update a plat
 router.put('/plats/:id', async (req: Request, res: Response) => {
   try {
-    console.log('update plat.id', req.params.id);
+    const platId = Number(req.params.id);
+    if (isNaN(platId)) {
+      return res.status(400).json({ message: 'Invalid plat ID' });
+    }
+
+    const { name, description, price, image } = req.body;
+    if (!name || !description || typeof price !== 'number' || !image) {
+      return res.status(400).json({ message: 'Invalid data' });
+    }
+
+    console.log('update plat.id', platId);
     console.log('update plat', req.body);
-    const updatedPlat = await updatePlat(Number(req.params.id), req.body);
+    //cast price to string
+    req.body.price = req.body.price.toString();
+    console.log('update plat', req.body);
+
+    const updatedPlat = await updatePlat(platId, req.body);
+
     if (!updatedPlat) {
       return res.status(404).json({ message: 'Plat not found' });
     }
+
     res.json(updatedPlat);
   } catch (error) {
+    console.error('Error updating plat:', error);
     res.status(500).json({ message: 'Error updating plat', error });
   }
 });
+
 
 // Delete a palt
 router.delete('/plats/:id', async (req: Request, res: Response) => {

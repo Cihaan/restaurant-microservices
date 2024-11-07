@@ -4,6 +4,6 @@ export interface Plat {
   description: string;
   price: number;
   image?: string;
-  createdAt?: Date;
-  updatedAt?: Date;
+  createdAt?: string;
+  updatedAt?: string;
 }
