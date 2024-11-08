@@ -10,5 +10,8 @@
   "compilerOptions": {
     "esModuleInterop": true,
     "importHelpers": true,
+    "paths": {
+      "@auth-service/*": ["packages/auth-service/src/*"],
   }
+}
 }

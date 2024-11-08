@@ -4,7 +4,6 @@ import {
   timestamp,
   varchar,
   serial,
-  integer,
   pgEnum,
   // uniqueIndex,
 } from 'drizzle-orm/pg-core';
@@ -15,16 +14,12 @@ export const drivers = pgTable(
   'drivers',
   {
     id: serial('id').primaryKey(),
-    driverId: integer('driver_id').notNull(), // ID du livreur (référence à la table des utilisateurs)
-    orderId: integer('order_id').notNull(),
-    status: DriverStatusEnum('status').default("available"),
+    name: varchar('name').notNull(),
+    order_id: varchar('order_id'),
+    status: DriverStatusEnum('status').default('available'),
     assignedAt: timestamp('assigned_at').defaultNow(),
     createdAt: timestamp('created_at').defaultNow()
   }
-  // },
-  // (table) => ({
-  //   nameIndex: uniqueIndex('driver_name_idx').on(table.name), // Index unique sur le nom
-  // })
 );
 
 export type SelectDriver = InferSelectModel<typeof drivers>;

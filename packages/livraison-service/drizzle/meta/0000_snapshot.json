@@ -1,5 +1,5 @@
 {
-  "id": "eab743c5-084e-422e-bf88-a9876a69901b",
+  "id": "94acb92a-b753-409c-b718-939a8fbc353a",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -56,17 +56,17 @@
           "primaryKey": true,
           "notNull": true
         },
-        "driver_id": {
-          "name": "driver_id",
-          "type": "integer",
+        "name": {
+          "name": "name",
+          "type": "varchar",
           "primaryKey": false,
           "notNull": true
         },
         "order_id": {
           "name": "order_id",
-          "type": "integer",
+          "type": "varchar",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         },
         "status": {
           "name": "status",
